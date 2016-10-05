@@ -1,25 +1,18 @@
-﻿Compilación iniciada a las 10/3/2016 4:57:31 PM.
+﻿Compilación iniciada a las 10/5/2016 12:32:35 PM.
      1>Proyecto "D:\Sergi\Documents\Universidad\VJ\Practica\Terraria\trunk\Terraria\Terraria.vcxproj" en el nodo 2 (Build destinos).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"..\libs\Simple OpenGL Image Library\src" /I..\libs\freeglut\include /I"..\libs\glew-1.13.0\include" /I..\libs\glm /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp main.cpp Player.cpp Scene.cpp Shader.cpp ShaderProgram.cpp Sprite.cpp Texture.cpp TileMap.cpp
-         TileMap.cpp
-         Texture.cpp
-         Sprite.cpp
-         ShaderProgram.cpp
-         Shader.cpp
-         Scene.cpp
-         Player.cpp
-         main.cpp
-         Game.cpp
-         Generando código...
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"..\libs\Simple OpenGL Image Library\src" /I..\libs\freeglut\include /I"..\libs\glew-1.13.0\include" /I..\libs\glm /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Text.cpp
+         Text.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Sergi\Documents\Universidad\VJ\Practica\Terraria\trunk\Debug\Terraria.exe" /INCREMENTAL /NOLOGO /LIBPATH:"..\libs\Simple OpenGL Image Library\projects\VC9\Debug" /LIBPATH:..\libs\freeglut\lib /LIBPATH:"..\libs\glew-1.13.0\lib\Release\Win32" SOIL.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Sergi\Documents\Universidad\VJ\Practica\Terraria\trunk\Debug\Terraria.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Sergi\Documents\Universidad\VJ\Practica\Terraria\trunk\Debug\Terraria.lib" /MACHINE:X86 Debug\Game.obj
          Debug\main.obj
+         Debug\Menu.obj
          Debug\Player.obj
          Debug\Scene.obj
          Debug\Shader.obj
          Debug\ShaderProgram.obj
          Debug\Sprite.obj
+         Debug\Text.obj
          Debug\Texture.obj
          Debug\TileMap.obj
      1>SOIL.lib(image_DXT.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(image_DXT.obj)' o en 'D:\Sergi\Documents\Universidad\VJ\Practica\Terraria\trunk\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
@@ -31,4 +24,4 @@
 
 Compilación correcta.
 
-Tiempo transcurrido 00:00:04.79
+Tiempo transcurrido 00:00:01.20
