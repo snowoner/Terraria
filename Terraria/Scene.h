@@ -7,6 +7,8 @@
 #include "TileMap.h"
 #include "Player.h"
 
+#include "Menu.h"
+
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -27,11 +29,16 @@ private:
 	void initShaders();
 
 private:
+	enum State { ST_MENU, ST_GAME, ST_CREDITS };
+	State state;
+
 	TileMap *map;
 	Player *player;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
+
+	Menu *menu;
 
 };
 
