@@ -38,6 +38,11 @@ void Scene::init()
 
 	menu = new Menu();
 	menu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	
+	enemies.push_back(new Enemy());
+	enemies[0]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	enemies[0]->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 80, INIT_PLAYER_Y_TILES * map->getTileSize()));
+	enemies[0]->setTileMap(map);
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
@@ -71,6 +76,9 @@ void Scene::update(int deltaTime)
 	}
 	else if (state == ST_GAME) {
 		player->update(deltaTime);
+		glm::vec2 posPlayer = player->getPosition();
+		for (unsigned int i = 0; i < enemies.size(); ++i)
+			enemies[i]->update(deltaTime, posPlayer);
 	}
 
 }
@@ -89,6 +97,8 @@ void Scene::render()
 	if (state == ST_MENU) menu->render();
 	else if (state == ST_GAME) {
 		player->render();
+		for (unsigned int i = 0; i < enemies.size(); ++i)
+			enemies[i]->render();
 	}
 }
 
