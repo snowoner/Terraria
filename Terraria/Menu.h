@@ -1,3 +1,6 @@
+#ifndef _MENU_INCLUDE
+#define _MENU_INCLUDE
+
 #include "Sprite.h"
 #include "ShaderProgram.h"
 #include <glm/glm.hpp>
@@ -15,13 +18,9 @@
 
 #define MAX_TIMECAPTURE 1000.f/8.f
 
-#pragma once
 class Menu
 {
 public:
-	Menu();
-	~Menu();
-
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
 	void update(int deltaTime);
 	void render();
@@ -41,3 +40,4 @@ private:
 	int pos;
 };
 
+#endif // _MENU_INCLUDE

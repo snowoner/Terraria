@@ -6,23 +6,14 @@
 
 const string options[Menu::MAXOPTIONS] = { "Jugar", "Opciones", "Creditos", "Salir" };
 
-Menu::Menu()
-{
-}
-
-
-Menu::~Menu()
-{
-}
-
 void Menu::init(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram) {
 	pos = PLAY;
 
 	float midY = SCREEN_MIDY;
 
 	text = new Text();
-	text->init(minCoords, shaderProgram);
-	for (int i = 0; i < Menu::MAXOPTIONS; ++i) {
+	text->init(shaderProgram,0);
+	for (int i = 0; i < MAXOPTIONS; ++i) {
 		int length = (options[i]).length();
 		text->addText(options[i], glm::vec2(SCREEN_MIDX - length / 2.f  * MENU_TILESIZE, midY + (MENU_TILESIZE + OFFSET)*i));
 	}

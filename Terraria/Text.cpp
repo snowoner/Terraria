@@ -8,26 +8,22 @@
 #include "Player.h"
 #include "Game.h"
 
-
-Text::Text()
+Text::textType textTypes[1] =
 {
-}
+	{ 32, 32, int(' '), 10, 10, "images/font.png" }
+};
 
 
-Text::~Text()
-{
-}
+void Text::init(ShaderProgram &shaderProgram, int type) {
+	typeText = type;
 
-
-void Text::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram) {
-
-	tilesheet.loadFromFile("images/font.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	tilesheet.loadFromFile(textTypes[typeText].font, TEXTURE_PIXEL_FORMAT_RGBA);
 	tilesheet.setWrapS(GL_CLAMP_TO_EDGE);
 	tilesheet.setWrapT(GL_CLAMP_TO_EDGE);
 	tilesheet.setMinFilter(GL_NEAREST);
 	tilesheet.setMagFilter(GL_NEAREST);
 
-	tilesheetSize = glm::vec2(TILE_LENGTH_X, TILE_LENGTH_Y);
+	tilesheetSize = glm::vec2(textTypes[typeText].tileLengthX, textTypes[typeText].tileLengthY);
 	nTiles = 0;
 
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
@@ -61,10 +57,6 @@ void Text::prepareText(const glm::vec2 &minCoords) {
 	halfTexel = glm::vec2(0.5f / tilesheet.width(), 0.5f / tilesheet.height());
 	std::vector<glm::vec2>::iterator itPositions = positions.begin();
 
-	tileSize = 32;
-	blockSize = 32;
-
-
 	for (std::vector<string>::iterator it = texts.begin(); it != texts.end(); ++it) {
 		posTile = (glm::vec2)*itPositions;
 
@@ -74,25 +66,25 @@ void Text::prepareText(const glm::vec2 &minCoords) {
 
 			// Non-empty tile
 			nTiles++;
-			tile = c - int(' ');
-			posTile = glm::vec2( posTile.x + tileSize, posTile.y);
+			tile = c - textTypes[typeText].offset;
+			posTile = glm::vec2(posTile.x + textTypes[typeText].tileSize, posTile.y);
 
-			texCoordTile[0] = glm::vec2(float((tile) % TILE_LENGTH_X) / tilesheetSize.x, float((tile) / TILE_LENGTH_Y) / tilesheetSize.y);
+			texCoordTile[0] = glm::vec2(float((tile) % int(textTypes[typeText].tileLengthX)) / tilesheetSize.x, float((tile) / int(textTypes[typeText].tileLengthY)) / tilesheetSize.y);
 			texCoordTile[1] = texCoordTile[0] + tileTexSize;
 			texCoordTile[1] -= halfTexel;
 			// First triangle
 			vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 			vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-			vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y);
+			vertices.push_back(posTile.x + textTypes[typeText].blockSize); vertices.push_back(posTile.y);
 			vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[0].y);
-			vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y + blockSize);
+			vertices.push_back(posTile.x + textTypes[typeText].blockSize); vertices.push_back(posTile.y + textTypes[typeText].blockSize);
 			vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
 			// Second triangle
 			vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 			vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-			vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y + blockSize);
+			vertices.push_back(posTile.x + textTypes[typeText].blockSize); vertices.push_back(posTile.y + textTypes[typeText].blockSize);
 			vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
-			vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize);
+			vertices.push_back(posTile.x); vertices.push_back(posTile.y + textTypes[typeText].blockSize);
 			vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
 		}
 		++itPositions;
