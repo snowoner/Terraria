@@ -39,7 +39,7 @@ void Scene::init()
 	menu = new Menu();
 	menu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	
-	enemies.push_back(new Enemy());
+	enemies.push_back(new Enemy(0));
 	enemies[0]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	enemies[0]->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 80, INIT_PLAYER_Y_TILES * map->getTileSize()));
 	enemies[0]->setTileMap(map);
