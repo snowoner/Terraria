@@ -121,10 +121,6 @@ void Player::setTileMap(TileMap *tileMap)
 	map = tileMap;
 }
 
-glm::vec2 Player::getPosition() {
-	return posPlayer;
-}
-
 void Player::setPosition(const glm::vec2 &pos)
 {
 	posPlayer = pos;

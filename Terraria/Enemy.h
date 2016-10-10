@@ -16,12 +16,12 @@ public:
 	~Enemy();
 
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
-	void update(int deltaTime, const glm::vec2 &pos);
+	void update(int deltaTime, const glm::vec2 &pos, bool playerSeen);
 	void render();
 
 	void Enemy::setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
-
+	glm::vec2 getPosition() const { return position; }
 private:
 	int getDecision(const glm::vec2 &pos);
 public:

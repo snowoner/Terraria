@@ -206,30 +206,57 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 
 
 
+bool TileMap::playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2) 
+{
+	float x1 = (pos2.x > pos1.x) ? (pos1.x + 32 - 1) / tileSize : pos1.x / tileSize;
+	float x2 = pos2.x / tileSize;
+	float y1 = (pos2.y < pos1.y) ? (pos1.y + 32 - 1) / tileSize : pos1.y / tileSize;
+	float y2 = pos2.y / tileSize;
 
+	bool seen = true;
 
+	// Bresenham's line algorithm
+	const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+	if (steep)
+	{
+		std::swap(x1, y1);
+		std::swap(x2, y2);
+	}
 
+	if (x1 > x2)
+	{
+		std::swap(x1, x2);
+		std::swap(y1, y2);
+	}
 
+	const float dx = x2 - x1;
+	const float dy = fabs(y2 - y1);
 
+	float error = dx / 2.0f;
+	const int ystep = (y1 < y2) ? 1 : -1;
+	int y = (int)y1;
 
+	const int maxX = (int)x2;
 
+	for (int x = (int)x1; x<maxX; x++)
+	{
+		if (steep)
+		{
+			if (map[x*mapSize.x + y] != 0)
+				seen = false;
+		}
+		else
+		{
+			if (map[y*mapSize.x + x] != 0)
+				seen = false;
+		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		error -= dy;
+		if (error < 0)
+		{
+			y += ystep;
+			error += dx;
+		}
+	}
+	return seen;
+}

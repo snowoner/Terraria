@@ -31,18 +31,10 @@ void Scene::init()
 	initShaders();
 
 	map = TileMap::createTileMap("levels/Menu.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	player = new Player();
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	player->setTileMap(map);
 
 	menu = new Menu();
 	menu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	
-	enemies.push_back(new Enemy(0));
-	enemies[0]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	enemies[0]->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 80, INIT_PLAYER_Y_TILES * map->getTileSize()));
-	enemies[0]->setTileMap(map);
+
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
@@ -58,8 +50,22 @@ void Scene::update(int deltaTime)
 			switch (menu->getMenuOption())
 			{
 			case Menu::PLAY:
-				if (menu->getMenuOption() == Menu::PLAY)
-					state = ST_GAME;
+				map->free();
+				map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+
+				player = new Player();
+				player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+				player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+				player->setTileMap(map);
+
+
+				enemies.push_back(new Enemy(0));
+				enemies[0]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+				enemies[0]->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 80, INIT_PLAYER_Y_TILES * map->getTileSize()));
+				enemies[0]->setTileMap(map);
+				
+				state = ST_GAME;
+
 				break;
 			case Menu::OPTIONS:
 				break;
@@ -77,8 +83,9 @@ void Scene::update(int deltaTime)
 	else if (state == ST_GAME) {
 		player->update(deltaTime);
 		glm::vec2 posPlayer = player->getPosition();
-		for (unsigned int i = 0; i < enemies.size(); ++i)
-			enemies[i]->update(deltaTime, posPlayer);
+		for (unsigned int i = 0; i < enemies.size(); ++i) {
+			enemies[i]->update(deltaTime, posPlayer, map->playerSeenBy(posPlayer,enemies[i]->getPosition()));
+		}
 	}
 
 }

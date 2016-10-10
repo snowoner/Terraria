@@ -16,9 +16,9 @@ Enemy::Enemy(int type)
 {
 	monsterType *mt = &(monsterTypes[type]);
 	monser = new monsterType({
-		mt->health, 
-		mt->speed, 
-		mt->name 
+		mt->health,
+		mt->speed,
+		mt->name
 	});
 	monsterTime = 0.f;
 }
@@ -52,38 +52,42 @@ void Enemy::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
 }
 
-void Enemy::update(int deltaTime, const glm::vec2 &pos)
+void Enemy::update(int deltaTime, const glm::vec2 &pos, bool playerSeen)
 {
 	sprite->update(deltaTime);
 	// each monster have his time, so we only search for monsters that player can see
 	monsterTime += deltaTime;
 
 	if (monsterTime >= 1000.f / monser->speed) {
-		int decision = getDecision(pos);
-		if (decision == MOVE_LEFT)
-		{
-			if (sprite->animation() != MOVE_LEFT)
-				sprite->changeAnimation(MOVE_LEFT);
-			position.x -= 2;
-			if (map->collisionMoveLeft(position, glm::ivec2(32, 32)))
+		if (playerSeen) {
+			int decision = getDecision(pos);
+			if (decision == MOVE_LEFT)
 			{
+				if (sprite->animation() != MOVE_LEFT)
+					sprite->changeAnimation(MOVE_LEFT);
+				position.x -= 2;
+				if (map->collisionMoveLeft(position, glm::ivec2(32, 32)))
+				{
+					position.x += 2;
+					sprite->changeAnimation(MOVE_RIGHT);
+				}
+			}
+			else if (decision == MOVE_RIGHT)
+			{
+				if (sprite->animation() != MOVE_RIGHT)
+					sprite->changeAnimation(MOVE_RIGHT);
 				position.x += 2;
-				sprite->changeAnimation(MOVE_RIGHT);
+				if (map->collisionMoveRight(position, glm::ivec2(32, 32)))
+				{
+					position.x -= 2;
+					sprite->changeAnimation(MOVE_LEFT);
+				}
 			}
 		}
-		else if (decision == MOVE_RIGHT)
-		{
-			if (sprite->animation() != MOVE_RIGHT)
-				sprite->changeAnimation(MOVE_RIGHT);
-			position.x += 2;
-			if (map->collisionMoveRight(position, glm::ivec2(32, 32)))
-			{
-				position.x -= 2;
-				sprite->changeAnimation(MOVE_LEFT);
-			}
+		else {
+			// random movement
 		}
 		monsterTime -= 1000.f / monser->speed;
-
 	}
 
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));

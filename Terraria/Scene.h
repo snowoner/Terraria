@@ -28,7 +28,6 @@ public:
 
 private:
 	void initShaders();
-
 private:
 	enum State { ST_MENU, ST_GAME, ST_CREDITS };
 	State state;
