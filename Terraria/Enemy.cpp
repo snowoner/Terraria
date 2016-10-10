@@ -52,14 +52,14 @@ void Enemy::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
 }
 
-void Enemy::update(int deltaTime, const glm::vec2 &pos, bool playerSeen)
+void Enemy::update(int deltaTime, const glm::vec2 &pos, bool playerSeen, bool playerCollision)
 {
 	sprite->update(deltaTime);
 	// each monster have his time, so we only search for monsters that player can see
 	monsterTime += deltaTime;
 
 	if (monsterTime >= 1000.f / monser->speed) {
-		if (playerSeen) {
+		if (playerSeen && !playerCollision) {
 			int decision = getDecision(pos);
 			if (decision == MOVE_LEFT)
 			{

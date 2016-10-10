@@ -84,7 +84,8 @@ void Scene::update(int deltaTime)
 		player->update(deltaTime);
 		glm::vec2 posPlayer = player->getPosition();
 		for (unsigned int i = 0; i < enemies.size(); ++i) {
-			enemies[i]->update(deltaTime, posPlayer, map->playerSeenBy(posPlayer,enemies[i]->getPosition()));
+			glm::vec2 posEnemy = enemies[i]->getPosition();
+			enemies[i]->update(deltaTime, posPlayer, map->playerSeenBy(posPlayer,posEnemy), map->playerCollisionBy(posPlayer,posEnemy));
 		}
 	}
 

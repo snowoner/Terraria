@@ -16,7 +16,7 @@ public:
 	~Enemy();
 
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
-	void update(int deltaTime, const glm::vec2 &pos, bool playerSeen);
+	void update(int deltaTime, const glm::vec2 &pos, bool playerSeen, bool playerCollision);
 	void render();
 
 	void Enemy::setTileMap(TileMap *tileMap);

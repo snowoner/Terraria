@@ -33,6 +33,7 @@ public:
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const;
 	
 	bool playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2);
+	bool playerCollisionBy(const glm::vec2 &pos1, const glm::vec2 &pos2);
 private:
 	bool loadLevel(const string &levelFile);
 	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
