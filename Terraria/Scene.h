@@ -29,7 +29,7 @@ public:
 private:
 	void initShaders();
 private:
-	enum State { ST_MENU, ST_GAME, ST_CREDITS };
+	enum State { ST_MENU, ST_GAME, ST_DEAD, ST_CREDITS };
 	State state;
 
 	TileMap *map;
@@ -40,6 +40,9 @@ private:
 	glm::mat4 projection;
 
 	Menu *menu;
+	Text *text;
+
+	bool firstTime;
 
 };
 

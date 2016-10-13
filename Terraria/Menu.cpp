@@ -4,7 +4,7 @@
 #include "Menu.h"
 #include "Game.h"
 
-const string options[Menu::MAXOPTIONS] = { "Jugar", "Opciones", "Creditos", "Salir" };
+const string options[Menu::MAXOPTIONS] = { "JUGAR", "OPCIONES", "CREDITOS", "SALIR" };
 
 void Menu::init(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram) {
 	pos = PLAY;

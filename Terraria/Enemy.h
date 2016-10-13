@@ -21,12 +21,18 @@ public:
 
 	void Enemy::setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
+
 	glm::vec2 getPosition() const { return position; }
+	float getDamageDeal() const { return (attackDelay == 0) ? monster->damage : 0; }
+
+	const enum STATE { MOVE_LEFT, MOVE_RIGHT, ATTACK, DEAD };
+
 private:
 	int getDecision(const glm::vec2 &pos);
 public:
 	struct monsterType {
-		short health, speed;
+		short health, speed, attSpeed;
+		float damage;
 		char *name;
 	};
 private:
@@ -34,11 +40,11 @@ private:
 	Sprite *sprite;
 	TileMap *map;
 	glm::vec2 tileMapDispl;
-
-	float monsterTime;
 	glm::vec2 position;
 
-	monsterType *monser;
+	monsterType *monster;
+	float monsterTime;
+	float attackDelay;
 };
 
 #endif // _ENEMY_INCLUDE

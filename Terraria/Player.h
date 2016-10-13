@@ -21,7 +21,10 @@ public:
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
 	glm::vec2 getPosition() const { return posPlayer; }
-	
+	float getLife() const { return life; }
+
+	void receiveDamage(float damage);
+
 private:
 	bool bJumping;
 	glm::ivec2 tileMapDispl, posPlayer;
@@ -30,6 +33,7 @@ private:
 	Sprite *sprite;
 	TileMap *map;
 
+	float life;
 };
 
 

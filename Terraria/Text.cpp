@@ -10,7 +10,7 @@
 
 Text::textType textTypes[1] =
 {
-	{ 32, 32, int(' '), 10, 10, "images/font.png" }
+	{ 32, 32, int('A'), 9, 4, "images/fontMenu.png" }
 };
 
 
@@ -69,7 +69,7 @@ void Text::prepareText(const glm::vec2 &minCoords) {
 			tile = c - textTypes[typeText].offset;
 			posTile = glm::vec2(posTile.x + textTypes[typeText].tileSize, posTile.y);
 
-			texCoordTile[0] = glm::vec2(float((tile) % int(textTypes[typeText].tileLengthX)) / tilesheetSize.x, float((tile) / int(textTypes[typeText].tileLengthY)) / tilesheetSize.y);
+			texCoordTile[0] = glm::vec2(float((tile) % int(textTypes[typeText].tileLengthX)) / tilesheetSize.x, float((tile) / int(textTypes[typeText].tileLengthX)) / tilesheetSize.y);
 			texCoordTile[1] = texCoordTile[0] + tileTexSize;
 			texCoordTile[1] -= halfTexel;
 			// First triangle
