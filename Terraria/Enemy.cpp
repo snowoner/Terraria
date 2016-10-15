@@ -1,59 +1,20 @@
 #include "Enemy.h"
 
-
-
-Enemy::monsterType monsterTypes[MONSERTYPES] =
-{
-	{ 100, 4, 2, 2.f, "images/zombie.png" }
-
-};
-
-Enemy::Enemy(int type)
-{
-	monsterType *mt = &(monsterTypes[type]);
-	monster = new monsterType({
-		mt->health,
-		mt->speed,
-		mt->attSpeed,
-		mt->damage,
-		mt->name
-	});
-	monsterTime = 0.f;
+Enemy::Enemy(const glm::ivec2 &tileMapPos) {
+	tileMapDispl = tileMapPos;
 }
 
 Enemy::~Enemy()
 {
-	if (monster != NULL)
-		delete monster;
+
 }
 
 
-void Enemy::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
+void Enemy::init(Sprite &sprite, TileMap &tileMap)
 {
-	tileMapDispl = tileMapPos;
-
-	spritesheet.loadFromFile(monster->name, TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5f, 1.f / 3.f), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(3);
-
-	sprite->setAnimationSpeed(MOVE_LEFT, monster->speed);
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.f));
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 1.f / 3.f));
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 2.f / 3.f));
-
-	sprite->setAnimationSpeed(MOVE_RIGHT, monster->speed);
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.5, 0.f));
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.5, 1.f / 3.f));
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.5, 2.f / 3.f));
-
-	// TODO: Change position of tiles from ATTACK sprites
-	sprite->setAnimationSpeed(ATTACK, monster->attSpeed);
-	sprite->addKeyframe(ATTACK, glm::vec2(0.5, 0.f));
-	sprite->addKeyframe(ATTACK, glm::vec2(0.5, 1.f / 3.f));
-	sprite->addKeyframe(ATTACK, glm::vec2(0.5, 2.f / 3.f));
-
-	sprite->changeAnimation(0);
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
+	this->sprite = &sprite;
+	this->map = &tileMap;
+	monsterTime = 0.f;
 }
 
 void Enemy::update(int deltaTime, const glm::vec2 &pos, bool playerSeen, bool playerCollision)
@@ -62,7 +23,7 @@ void Enemy::update(int deltaTime, const glm::vec2 &pos, bool playerSeen, bool pl
 	// each monster have his time, so we only search for monsters that player can see
 	monsterTime += deltaTime;
 
-	if (monsterTime >= 1000.f / monster->speed) {
+	if (monsterTime >= 1000.f / speed) {
 		if (!playerCollision) {
 			if (playerSeen) {
 				int decision = getDecision(pos);
@@ -102,9 +63,9 @@ void Enemy::update(int deltaTime, const glm::vec2 &pos, bool playerSeen, bool pl
 			}
 
 			attackDelay++;
-			if (attackDelay == monster->attSpeed) attackDelay = 0;
+			if (attackDelay == attSpeed) attackDelay = 0;
 		}
-		monsterTime -= 1000.f / monster->speed;
+		monsterTime -= 1000.f /speed;
 	}
 
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
@@ -115,13 +76,9 @@ void Enemy::render()
 	sprite->render();
 }
 
-void Enemy::setTileMap(TileMap *tileMap)
-{
-	map = tileMap;
-}
-
 void Enemy::setPosition(const glm::vec2 &pos) {
 	position = pos;
+	sprite->setPosition(glm::vec2(float(32 + position.x),float(16 + position.y)));
 }
 
 int Enemy::getDecision(const glm::vec2 &pos) {

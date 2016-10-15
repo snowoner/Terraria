@@ -13,6 +13,8 @@
   <ItemGroup>
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyFactory.h" />
+    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
@@ -23,9 +25,12 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyFactory.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -37,6 +42,7 @@
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="Zombie.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5BE6CA2A-E5A8-40CC-9015-047CE0C78036}</ProjectGuid>

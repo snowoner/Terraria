@@ -1,12 +1,11 @@
 #ifndef _SCENE_INCLUDE
 #define _SCENE_INCLUDE
 
-
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
-#include "Enemy.h"
+#include "EnemyManager.h"
 
 #include "Menu.h"
 
@@ -34,7 +33,7 @@ private:
 
 	TileMap *map;
 	Player *player;
-	vector<Enemy*> enemies;
+
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
@@ -44,6 +43,7 @@ private:
 
 	bool firstTime;
 
+	EnemyManager *enemyManager;
 };
 
 

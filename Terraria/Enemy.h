@@ -8,43 +8,41 @@
 
 #define MONSERTYPES 1
 
-#pragma once
+
+static const char* getURL();
+static Sprite* getSprite(Texture &spritesheet, ShaderProgram &shaderProgram);
+
 class Enemy
 {
-public:
-	Enemy(int type);
+protected:
+	Enemy(const glm::ivec2 &tileMapPos);
 	~Enemy();
-
-	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
+public:
+	void init(Sprite &sprite, TileMap &tileMap);
 	void update(int deltaTime, const glm::vec2 &pos, bool playerSeen, bool playerCollision);
 	void render();
 
-	void Enemy::setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
-
 	glm::vec2 getPosition() const { return position; }
-	float getDamageDeal() const { return (attackDelay == 0) ? monster->damage : 0; }
+	//	float getDamageDeal() const { return (attackDelay == 0) ? monster->damage : 0; }
 
 	const enum STATE { MOVE_LEFT, MOVE_RIGHT, ATTACK, DEAD };
 
-private:
-	int getDecision(const glm::vec2 &pos);
-public:
-	struct monsterType {
-		short health, speed, attSpeed;
-		float damage;
-		char *name;
-	};
-private:
-	Texture spritesheet;
-	Sprite *sprite;
-	TileMap *map;
-	glm::vec2 tileMapDispl;
+protected:
+	float health, speed, attSpeed;
+	int attackDelay;
 	glm::vec2 position;
 
-	monsterType *monster;
+private:
+	int getDecision(const glm::vec2 &pos);
+	
+private:
 	float monsterTime;
-	float attackDelay;
+
+	Sprite *sprite;
+	TileMap *map;
+
+	glm::vec2 tileMapDispl;
 };
 
 #endif // _ENEMY_INCLUDE

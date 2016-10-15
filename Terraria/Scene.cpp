@@ -62,11 +62,10 @@ void Scene::update(int deltaTime)
 					player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 					player->setTileMap(map);
 
+					enemyManager = new EnemyManager(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+					enemyManager->setTileMap(map);
+					enemyManager->addEnemy();
 
-					enemies.push_back(new Enemy(0));
-					enemies[enemies.size() - 1]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-					enemies[enemies.size() - 1]->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize() + 80, INIT_PLAYER_Y_TILES * map->getTileSize()));
-					enemies[enemies.size() - 1]->setTileMap(map);
 					firstTime = false;
 				}
 				state = ST_GAME;
@@ -92,6 +91,8 @@ void Scene::update(int deltaTime)
 		}
 		else {
 			glm::vec2 posPlayer = player->getPosition();
+			enemyManager->update(deltaTime, posPlayer);
+			/*
 			for (unsigned int i = 0; i < enemies.size(); ++i) {
 				glm::vec2 posEnemy = enemies[i]->getPosition();
 				bool collision = map->playerCollisionBy(posPlayer, posEnemy);
@@ -106,7 +107,7 @@ void Scene::update(int deltaTime)
 						text->prepareText(glm::ivec2(SCREEN_X, SCREEN_Y));
 					}
 				}
-			}
+			}*/
 			player->update(deltaTime);
 		}
 		break;
@@ -140,8 +141,7 @@ void Scene::render()
 		break;
 	case Scene::ST_GAME:
 		player->render();
-		for (unsigned int i = 0; i < enemies.size(); ++i)
-			enemies[i]->render();
+		enemyManager->render();
 		break;
 	case Scene::ST_DEAD:
 		text->render();
