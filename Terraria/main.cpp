@@ -53,9 +53,9 @@ static void motionCallback(int x, int y)
 
 static void mouseCallback(int button, int state, int x, int y)
 {
-	if(state == GLUT_DOWN)
-		Game::instance().mousePress(button);
-	else if(state == GLUT_UP)
+	if (state == GLUT_DOWN)
+		Game::instance().mousePress(button, x, y);
+	else if (state == GLUT_UP)
 		Game::instance().mouseRelease(button);
 }
 
@@ -69,11 +69,11 @@ static void idleCallback()
 {
 	int currentTime = glutGet(GLUT_ELAPSED_TIME);
 	int deltaTime = currentTime - prevTime;
-	
-	if(deltaTime > TIME_PER_FRAME)
+
+	if (deltaTime > TIME_PER_FRAME)
 	{
 		// Every time we enter here is equivalent to a game loop execution
-		if(!Game::instance().update(deltaTime))
+		if (!Game::instance().update(deltaTime))
 			exit(0);
 		prevTime = currentTime;
 		glutPostRedisplay();
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 	// GLEW will take care of OpenGL extension functions
 	glewExperimental = GL_TRUE;
 	glewInit();
-	
+
 	// Game instance initialization
 	Game::instance().init();
 	prevTime = glutGet(GLUT_ELAPSED_TIME);

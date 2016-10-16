@@ -91,6 +91,15 @@ void Scene::update(int deltaTime)
 		}
 		else {
 			glm::vec2 posPlayer = player->getPosition();
+
+			if (Game::instance().isMousePressed()) {
+				glm::vec2 posMouse = Game::instance().getMousePosition();
+				// TODO: There are 3 states of player (depends on which selected item):
+				// Pricking: we must check if there is a brick so we can destroy it
+				// Attacking: we must attack, detecting which direction (x) is. If there is a monster close in this direction deal damage on him
+				// Building: build with material selected 
+			}
+
 			enemyManager->update(deltaTime, posPlayer);
 			/*
 			for (unsigned int i = 0; i < enemies.size(); ++i) {
@@ -108,6 +117,7 @@ void Scene::update(int deltaTime)
 					}
 				}
 			}*/
+			
 			player->update(deltaTime);
 		}
 		break;
