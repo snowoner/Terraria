@@ -127,6 +127,21 @@ void Player::setPosition(const glm::vec2 &pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
+void Player::getElement(int type) 
+{
+	elementFactory.addElement(type);
+}
+
+void Player::removeElement(int n) 
+{
+	elementFactory.removeElement(n);
+}
+
+void Player::craftElement(int type)
+{
+	elementFactory.craftElement(type);
+}
+
 void Player::receiveDamage(float damage) {
 	life -= damage;
 }

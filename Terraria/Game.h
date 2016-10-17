@@ -42,8 +42,8 @@ public:
 	bool getKey(int key) const;
 	bool getSpecialKey(int key) const;
 
-	bool isMousePressed() const;
-	glm::vec2 getMousePosition() const;
+	bool isMousePressed(int button) const;
+	glm::ivec2 getMousePosition() const;
 
 private:
 	bool bPlay;                       // Continue to play game?
@@ -51,7 +51,7 @@ private:
 	bool keys[256], specialKeys[256]; // Store key states so that 
 	                                  // we can have access at any time
 	bool bMousePressed[2];
-	glm::vec2 mousePos;
+	glm::ivec2 mousePos;
 
 
 };

@@ -71,12 +71,12 @@ bool Game::getSpecialKey(int key) const
 	return specialKeys[key];
 }
 
-bool Game::isMousePressed() const
+bool Game::isMousePressed(int button) const
 {
-	return bMousePressed;
+	return bMousePressed[button];
 }
 
-glm::vec2 Game::getMousePosition() const
+glm::ivec2 Game::getMousePosition() const
 {
 	return mousePos;
 }

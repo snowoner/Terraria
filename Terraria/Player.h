@@ -4,6 +4,7 @@
 
 #include "Sprite.h"
 #include "TileMap.h"
+#include "ElementFactory.h"
 
 
 // Player is basically a Sprite that represents the player. As such it has
@@ -23,6 +24,10 @@ public:
 	glm::vec2 getPosition() const { return posPlayer; }
 	float getLife() const { return life; }
 
+	void getElement(int type);
+	void removeElement(int n);
+	void craftElement(int type);
+
 	void receiveDamage(float damage);
 
 private:
@@ -32,6 +37,7 @@ private:
 	Texture spritesheet;
 	Sprite *sprite;
 	TileMap *map;
+	ElementFactory elementFactory;
 
 	float life;
 };
