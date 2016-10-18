@@ -42,6 +42,8 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.5f));
 
 	sprite->changeAnimation(0);
+	direction = LEFT;
+
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 
@@ -53,7 +55,10 @@ void Player::update(int deltaTime)
 	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
 		if (sprite->animation() != MOVE_LEFT)
+		{
 			sprite->changeAnimation(MOVE_LEFT);
+			direction = LEFT;
+		}
 		posPlayer.x -= 2;
 		if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 		{
@@ -64,7 +69,11 @@ void Player::update(int deltaTime)
 	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
 	{
 		if (sprite->animation() != MOVE_RIGHT)
+		{
 			sprite->changeAnimation(MOVE_RIGHT);
+			direction = RIGHT;
+		}
+			
 		posPlayer.x += 2;
 		if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
@@ -132,9 +141,19 @@ void Player::getElement(int type)
 	elementFactory.addElement(type);
 }
 
-void Player::removeElement(int n) 
+Element* Player::getElementSelected() {
+	return elementFactory.getElementSelected();
+}
+
+void Player::setElementSelected(int selected) 
 {
-	elementFactory.removeElement(n);
+	// TODO: selected is a position where the box with the element is.
+	elementFactory.setElementSelected(selected);
+}
+
+void Player::removeElement(Element *element)
+{
+	elementFactory.removeElement(element);
 }
 
 void Player::craftElement(int type)

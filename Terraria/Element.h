@@ -13,7 +13,13 @@ public:
 	void render();
 
 	vector<Element*> getCraftingMaterials();
-private:
+
+	float getDamage();
+
+	// TODO: struct with differents type of weapon/pick/material if there are more than one, and select type
+	virtual int getType() = 0;
+protected:
+	float damage, attSpeed;
 	vector<Element*> craftingMaterials;
 };
 

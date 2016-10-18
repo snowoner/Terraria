@@ -154,6 +154,14 @@ void TileMap::buildElement(glm::ivec2 posElement, int type)
 	map[posElement.y*mapSize.x + posElement.x] = type;
 }
 
+// Get Material
+int TileMap::getElement(glm::ivec2 posElement)
+{
+	// Do it to TileMap (getting material with player.removeElement()) and building it in tileMap
+	return map[posElement.y*mapSize.x + posElement.x];
+}
+
+
 // Collision tests for axis aligned bounding boxes.
 // Method collisionMoveDown also corrects Y coordinate if the box is
 // already intersecting a tile below.
@@ -212,9 +220,8 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	return false;
 }
 
-
-
-bool TileMap::playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2)
+// TODO: get pos1.tileSize and pos2.tilesize
+bool TileMap::playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance)
 {
 	float x1 = (pos2.x > pos1.x) ? (pos1.x + 32 - 1) / tileSize : pos1.x / tileSize;
 	float x2 = pos2.x / tileSize;
@@ -245,18 +252,18 @@ bool TileMap::playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2)
 	int y = (int)y1;
 
 	const int maxX = (int)x2;
-
-	for (int x = (int)x1; x < maxX; x++)
+	int x = (int)x1;
+	while (x < maxX && x < maxDistance + (int)x1)
 	{
 		if (steep)
 		{
 			if (map[x*mapSize.x + y] != 0)
-				seen = false;
+				return false;
 		}
 		else
 		{
 			if (map[y*mapSize.x + x] != 0)
-				seen = false;
+				return false;
 		}
 
 		error -= dy;
@@ -265,8 +272,9 @@ bool TileMap::playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2)
 			y += ystep;
 			error += dx;
 		}
+		x++;
 	}
-	return seen;
+	return seen && x != (maxDistance + (int)x1);
 }
 
 bool TileMap::playerCollisionBy(const glm::vec2 &pos1, const glm::vec2 &pos2)
@@ -284,4 +292,27 @@ bool TileMap::playerCollisionBy(const glm::vec2 &pos1, const glm::vec2 &pos2)
 		(y1 < y2 + b) &&
 		(y2 < y1 + a)
 		);
+}
+
+// TODO: get pos1.tileSize and pos2.tilesize
+bool TileMap::insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance) {
+	float x1 = (pos2.x > pos1.x) ? (pos1.x + 32 - 1) / tileSize : pos1.x / tileSize;
+	float x2 = pos2.x / tileSize;
+	float y1 = (pos2.y < pos1.y) ? (pos1.y + 32 - 1) / tileSize : pos1.y / tileSize;
+	float y2 = pos2.y / tileSize;
+
+	const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+	if (steep)
+	{
+		std::swap(x1, y1);
+		std::swap(x2, y2);
+	}
+
+	if (x1 > x2)
+	{
+		std::swap(x1, x2);
+		std::swap(y1, y2);
+	}
+
+	return (std::round(x2 - x1) <= maxDistance);
 }

@@ -76,11 +76,18 @@ void Enemy::render()
 	sprite->render();
 }
 
-void Enemy::setPosition(const glm::vec2 &pos) {
+void Enemy::setPosition(const glm::vec2 &pos) 
+{
 	position = pos;
 	sprite->setPosition(glm::vec2(float(32 + position.x),float(16 + position.y)));
 }
 
-int Enemy::getDecision(const glm::vec2 &pos) {
+int Enemy::getDecision(const glm::vec2 &pos) 
+{
 	return (pos.x > position.x);
+}
+
+void Enemy::setDamage(int damage)
+{
+	health -= damage;
 }

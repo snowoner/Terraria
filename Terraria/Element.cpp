@@ -17,3 +17,8 @@ void Element::render() {
 vector<Element*> Element::getCraftingMaterials() {
 	return craftingMaterials;
 }
+
+float Element::getDamage()
+{
+	return damage;
+}

@@ -3,6 +3,9 @@
 
 #include "Element.h"
 #include "Sprite.h"
+#include "Weapon.h"
+#include "Pick.h"
+#include "Material.h"
 
 
 class ElementFactory
@@ -13,13 +16,18 @@ public:
 
 	void render();
 
+	void setElementSelected(int selected);
+	Element* getElementSelected();
 
 	Element *addElement(int type);
-	void removeElement(int n);
+	void removeElement(Element *element);
 	bool craftElement(int type);
+private:
+	int getElementPosition(Element *element);
 
 private:
 	vector<Element*> elements;
+	int selected;
 };
 
 #endif // _ELEMENTFACTORY_INCLUDE

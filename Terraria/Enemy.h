@@ -25,6 +25,8 @@ public:
 	void setPosition(const glm::vec2 &pos);
 	glm::vec2 getPosition() const { return position; }
 	//	float getDamageDeal() const { return (attackDelay == 0) ? monster->damage : 0; }
+	
+	void setDamage(int damage);
 
 	const enum STATE { MOVE_LEFT, MOVE_RIGHT, ATTACK, DEAD };
 

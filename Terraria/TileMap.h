@@ -6,6 +6,9 @@
 #include "Texture.h"
 #include "ShaderProgram.h"
 
+#define LEFT 0
+#define RIGHT 1
+
 
 // Class Tilemap is capable of loading a tile map from a text file in a very
 // simple format (see level01.txt for an example). With this information
@@ -34,10 +37,14 @@ public:
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const;
 	
-	bool playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2);
+	bool playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance);
 	bool playerCollisionBy(const glm::vec2 &pos1, const glm::vec2 &pos2);
 
+	bool insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance);
+
 	void buildElement(glm::ivec2 posElement, int type);
+	int getElement(glm::ivec2 posElement);
+
 private:
 	bool loadLevel(const string &levelFile);
 
