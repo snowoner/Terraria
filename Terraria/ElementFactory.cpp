@@ -1,22 +1,40 @@
 #include "ElementFactory.h"
 
 
-ElementFactory::ElementFactory()
+ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram)
 {
 	elements.push_back(new Pick());
 	elements.push_back(new Material());
 	elements.push_back(new Weapon());
 	this->setElementSelected(0);
+
+	textGenerator = new TextureGenerator();
+	textGenerator->init(&shaderProgram, "images/glass.png",
+		glm::vec2(1, 1),
+		48, 48, 0, true);
+	textGeneratorItems = new TextureGenerator();
+	textGeneratorItems->init(&shaderProgram, "images/items.png",
+		glm::vec2(1, 1),
+		48, 48, 0);
+
+	glm::vec2 position = glm::vec2(5.f, 5.f);
+	vector<int> tiles;
+	vector<int> tilesItems;
+	for (int i = 0; i < elements.size(); i++) {
+		tiles.push_back(1);
+		tilesItems.push_back(1);
+	}
+	textGenerator->addTiles(tiles, position);
+	textGeneratorItems->addTiles(tilesItems, position);
+	textGenerator->prepareArrays(minCoords);
+	textGeneratorItems->prepareArrays(minCoords);
 }
-
-
-ElementFactory::~ElementFactory()
-{
-}
-
 
 void ElementFactory::render()
 {
+	// TODO: only render it when player change some weapon and at init
+	textGenerator->render();
+	textGeneratorItems->render();
 	for (Element* element : elements)
 		element->render();
 }

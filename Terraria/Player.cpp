@@ -19,6 +19,7 @@ enum PlayerAnims
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
+	elementFactory = new ElementFactory(tileMapPos, shaderProgram);
 	life = 100.f;
 	bJumping = false;
 	spritesheet.loadFromFile("images/bub.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -122,6 +123,7 @@ void Player::update(int deltaTime)
 
 void Player::render()
 {
+	elementFactory->render();
 	sprite->render();
 }
 
@@ -138,27 +140,27 @@ void Player::setPosition(const glm::vec2 &pos)
 
 void Player::getElement(int type) 
 {
-	elementFactory.addElement(type);
+	elementFactory->addElement(type);
 }
 
 Element* Player::getElementSelected() {
-	return elementFactory.getElementSelected();
+	return elementFactory->getElementSelected();
 }
 
 void Player::setElementSelected(int selected) 
 {
 	// TODO: selected is a position where the box with the element is.
-	elementFactory.setElementSelected(selected);
+	elementFactory->setElementSelected(selected);
 }
 
 void Player::removeElement(Element *element)
 {
-	elementFactory.removeElement(element);
+	elementFactory->removeElement(element);
 }
 
 void Player::craftElement(int type)
 {
-	elementFactory.craftElement(type);
+	elementFactory->craftElement(type);
 }
 
 void Player::receiveDamage(float damage) {

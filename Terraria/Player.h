@@ -45,7 +45,7 @@ private:
 	Sprite *sprite;
 	TileMap *map;
 	
-	ElementFactory elementFactory;
+	ElementFactory *elementFactory;
 
 	float life;
 };

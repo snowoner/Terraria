@@ -1,6 +1,7 @@
 #ifndef _ELEMENTFACTORY_INCLUDE
 #define _ELEMENTFACTORY_INCLUDE
 
+#include "TextureGenerator.h"
 #include "Element.h"
 #include "Sprite.h"
 #include "Weapon.h"
@@ -11,8 +12,7 @@
 class ElementFactory
 {
 public:
-	ElementFactory();
-	~ElementFactory();
+	ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram);
 
 	void render();
 
@@ -26,6 +26,9 @@ private:
 	int getElementPosition(Element *element);
 
 private:
+	TextureGenerator *textGenerator;
+	TextureGenerator *textGeneratorItems;
+
 	vector<Element*> elements;
 	int selected;
 };

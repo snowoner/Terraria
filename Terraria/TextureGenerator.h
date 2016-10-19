@@ -2,27 +2,23 @@
 #define _TEXT_GEN_INCLUDE
 
 #include <vector>
-#include <glm/glm.hpp>
 #include "Texture.h"
 #include "ShaderProgram.h"
 
 class TextureGenerator
 {
 public:
-	TextureGenerator();
-	~TextureGenerator();
-
-	void init(const string &filename, glm::ivec2 tileSheetSize, int blockSize, int tileSize, int offset);
+	void init(ShaderProgram *program, const string &filename, glm::ivec2 tileSheetSize, int blockSize, int tileSize, int offset, bool alpha = false);
 	void render() const;
 
-	void setTileSheet(const string &filename);
 	void addTiles(vector<int> tiles, const glm::vec2 &position);
-	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
+	void prepareArrays(const glm::vec2 &minCoords);
 private:
 	int nTiles;
-	GLuint vao;
-	GLuint vbo;
+	ShaderProgram *shaderProgram;
+	GLuint vao, vbo;
 	GLint posLocation, texCoordLocation;
+	bool alphaTex;
 
 	glm::ivec2 tilesheetSize;
 	glm::vec2 tileTexSize;

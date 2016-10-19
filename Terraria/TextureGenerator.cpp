@@ -1,18 +1,6 @@
 #include "TextureGenerator.h"
-#include <vector>
 
-
-TextureGenerator::TextureGenerator()
-{
-}
-
-
-TextureGenerator::~TextureGenerator()
-{
-}
-
-
-void TextureGenerator::init(const string &filename, glm::ivec2 tileSheetSize, int blockSize, int tileSize, int offset)
+void TextureGenerator::init(ShaderProgram *program, const string &filename, glm::ivec2 tileSheetSize, int blockSize, int tileSize, int offset, bool alpha)
 {
 	tilesheet.loadFromFile(filename, TEXTURE_PIXEL_FORMAT_RGBA);
 	tilesheet.setWrapS(GL_CLAMP_TO_EDGE);
@@ -21,15 +9,21 @@ void TextureGenerator::init(const string &filename, glm::ivec2 tileSheetSize, in
 	tilesheet.setMagFilter(GL_NEAREST);
 	this->tilesheetSize = tileSheetSize;
 	this->blockSize = blockSize;
-	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
 	this->tileSize = tileSize;
 	this->offset = offset;
+	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
+	alphaTex = alpha;
+	shaderProgram = program;
 }
 
 void TextureGenerator::render() const
 {
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
+	if (alphaTex) shaderProgram->setUniform4f("color", 1.f, 1.f, 1.f, 0.5f);
+	else shaderProgram->setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(posLocation);
 	glEnableVertexAttribArray(texCoordLocation);
@@ -43,7 +37,7 @@ void TextureGenerator::addTiles(vector<int> tile, const glm::vec2 &position) {
 	tiles.push_back(tile);
 }
 
-void TextureGenerator::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
+void TextureGenerator::prepareArrays(const glm::vec2 &minCoords)
 {
 	nTiles = 0;
 	int tile;
@@ -90,8 +84,8 @@ void TextureGenerator::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * nTiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-	posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
-	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+	posLocation = shaderProgram->bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
+	texCoordLocation = shaderProgram->bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 }
 
 
