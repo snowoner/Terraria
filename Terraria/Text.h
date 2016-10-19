@@ -4,12 +4,12 @@
 #include <glm/glm.hpp>
 #include "Sprite.h"
 #include "ShaderProgram.h"
+#include "TextureGenerator.h"
 
 class Text
 {
 public:
 	void init(ShaderProgram &shaderProgram, int type);
-	void update();
 	void render();
 
 	void addText(string text, const glm::vec2 &position);
@@ -22,20 +22,8 @@ public:
 		char *font;
 	};
 private:
-	int nTiles;
-	int typeText;
-	vector<glm::vec2> positions;
-	vector<string > texts;
-
 	ShaderProgram *program;
-
-	GLuint vao;
-	GLuint vbo;
-	GLint posLocation, texCoordLocation;
-	glm::ivec2 tilesheetSize;
-	Texture tilesheet;
-	glm::vec2 tileTexSize;
-
+	TextureGenerator textGenerator;
 };
 
 #endif // _TEXT_INCLUDE
