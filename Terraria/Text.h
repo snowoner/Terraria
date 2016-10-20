@@ -6,11 +6,13 @@
 class Text
 {
 public:
-	void init(ShaderProgram &shaderProgram, int type);
+	void init(ShaderProgram &shaderProgram, const glm::vec2 &minCoords, int type);
 	void render();
 
+	void setPosition(const glm::vec2 &minCoord);
+
 	void addText(string text, const glm::vec2 &position);
-	void prepareText(const glm::vec2 &minCoords);
+	void prepareText();
 public:
 	struct textType {
 		short tileSize, blockSize, offset;
@@ -18,7 +20,7 @@ public:
 		char *font;
 	};
 private:
-	TextureGenerator textGenerator;
+	TextureGenerator *textGenerator;
 };
 
 #endif // _TEXT_INCLUDE

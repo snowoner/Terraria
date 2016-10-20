@@ -9,36 +9,48 @@ ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shade
 	this->setElementSelected(0);
 
 	textGenerator = new TextureGenerator();
-	textGenerator->init(&shaderProgram, "images/glass.png",
+	textGenerator->init(&shaderProgram, minCoords, "images/glass.png",
 		glm::vec2(1, 1),
 		48, 48, 0, true);
+
 	textGeneratorItems = new TextureGenerator();
-	textGeneratorItems->init(&shaderProgram, "images/items.png",
-		glm::vec2(1, 1),
+	textGeneratorItems->init(&shaderProgram, minCoords, "images/items.png",
+		glm::vec2(3, 1),
 		48, 48, 0);
+
+	prepareArrays();
+}
+
+void ElementFactory::prepareArrays()
+{
+	textGenerator->removeTiles();
+	textGeneratorItems->removeTiles();
 
 	glm::vec2 position = glm::vec2(5.f, 5.f);
 	vector<int> tiles;
 	vector<int> tilesItems;
 	for (int i = 0; i < elements.size(); i++) {
 		tiles.push_back(1);
-		tilesItems.push_back(1);
+		tilesItems.push_back(elements[i]->getTileIndex());
 	}
+
 	textGenerator->addTiles(tiles, position);
 	textGeneratorItems->addTiles(tilesItems, position);
-	textGenerator->prepareArrays(minCoords);
-	textGeneratorItems->prepareArrays(minCoords);
+
+	textGenerator->prepareArrays();
+	textGeneratorItems->prepareArrays();
 }
 
+// TODO: only render it when player change some weapon and at init
 void ElementFactory::render()
 {
-	// TODO: only render it when player change some weapon and at init
 	textGenerator->render();
 	textGeneratorItems->render();
 	for (Element* element : elements)
 		element->render();
 }
 
+// TODO: implement add element by type
 Element* ElementFactory::addElement(int type)
 {
 	//elements.push_back(new Element());
@@ -58,7 +70,8 @@ Element* ElementFactory::getElementSelected()
 void ElementFactory::removeElement(Element *element)
 {
 	int pos = this->getElementPosition(element);
-	elements.erase(elements.begin() + pos);
+	if (pos != -1) elements.erase(elements.begin() + pos);
+	prepareArrays();
 }
 
 bool ElementFactory::craftElement(int type)
@@ -75,4 +88,10 @@ bool ElementFactory::craftElement(int type)
 int ElementFactory::getElementPosition(Element *element)
 {
 	return find(elements.begin(), elements.end(), element) - elements.begin();
+}
+
+void ElementFactory::setPosition(const glm::vec2 &minCoords)
+{
+	textGenerator->setPosition(minCoords);
+	textGeneratorItems->setPosition(minCoords);
 }

@@ -4,9 +4,6 @@
 #include "Scene.h"
 #include "Game.h"
 
-#define SCREEN_X 32
-#define SCREEN_Y 16
-#define SCREEN_VEC glm::ivec2(SCREEN_X, SCREEN_Y)
 
 #define INIT_PLAYER_X_TILES 4
 #define INIT_PLAYER_Y_TILES 25
@@ -33,9 +30,11 @@ void Scene::init()
 
 	map = TileMap::createTileMap("levels/Menu.txt", SCREEN_VEC, texProgram);
 
+	posTileMap = glm::vec2(SCREEN_X, SCREEN_Y);
 	menu = new Menu();
-	menu->init(SCREEN_VEC, texProgram);
+	menu->init(posTileMap, texProgram);
 
+	camera = new Camera();
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
@@ -60,8 +59,10 @@ void Scene::update(int deltaTime)
 
 					player = new Player();
 					player->init(SCREEN_VEC, texProgram);
-					player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+					glm::vec2 posPlayer = glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize());
+					player->setPosition(posPlayer);
 					player->setTileMap(map);
+					camera->update(deltaTime, posPlayer, glm::vec2(1, 1));
 
 					enemyManager = new EnemyManager(SCREEN_VEC, texProgram);
 					enemyManager->setTileMap(map);
@@ -88,45 +89,21 @@ void Scene::update(int deltaTime)
 	case Scene::ST_GAME:
 		if (Game::instance().getKey(int('m')))
 		{
+			menu->setPosition(camera->getPosition());
 			state = ST_MENU;
 		}
 		else {
 			glm::vec2 posPlayer = player->getPosition();
-
-			if (Game::instance().isMousePressed(0)) {
-				// TODO: There are 3 states of player (depends on which selected item):
-				Element* item = player->getElementSelected();
-				if (dynamic_cast<Weapon*>(item) != 0) {
-					// Attacking: we must attack, detecting which direction (x) is. If there is a monster close in this direction deal damage on him
-					float damage = item->getDamage();
-					// TOOD: Set damage to all enemies within a size of weapon (distance from player)
-					enemyManager->setDamage(posPlayer, damage, player->getDirection());
-				}
-				else if (dynamic_cast<Pick*>(item) != 0) {
-					// Pricking: we must check if there is a brick so we can destroy it
-					glm::ivec2 posElement = (Game::instance().getMousePosition() - SCREEN_VEC);
-					if (map->insideDistance(posPlayer, posElement, MAXDISTANCE_BUILD)
-						&& map->getElement(posElement) != NULL)
-					{
-						posElement /= (glm::ivec2(map->getTileSize(), map->getTileSize()));
-						map->buildElement(posElement, NULL);
-						map->prepareArrays(SCREEN_VEC, texProgram);
-					}
-				}
-				else if (dynamic_cast<Material*>(item) != 0) {
-					glm::ivec2 posElement = (Game::instance().getMousePosition() - SCREEN_VEC);
-					// TODO: playerSeenBy is not the function needed here. We only need to calculate the distance between 
-					if (map->insideDistance(posPlayer, posElement, MAXDISTANCE_BUILD)) {
-						posElement /= (glm::ivec2(map->getTileSize(), map->getTileSize()));
-						map->buildElement(posElement, item->getType());
-						map->prepareArrays(SCREEN_VEC, texProgram);
-						player->removeElement(item);
-					}
-				}
-
-			}
-
+			// TODO: only update camera when players moves
+			camera->update(deltaTime, posPlayer, glm::vec2(1, 1));
 			enemyManager->update(deltaTime, posPlayer);
+
+			glm::vec2 posCamera = camera->getPosition();
+			
+			player->update(deltaTime, posCamera);
+			projection = glm::ortho(float(posCamera.x), float(posCamera.x + SCREEN_WIDTH - 1), float(posCamera.y + SCREEN_HEIGHT - 1), float(posCamera.y));
+
+
 			/*
 			for (unsigned int i = 0; i < enemies.size(); ++i) {
 			glm::vec2 posEnemy = enemies[i]->getPosition();
@@ -143,9 +120,6 @@ void Scene::update(int deltaTime)
 			}
 			}
 			}*/
-
-			player->update(deltaTime);
-
 		}
 		break;
 	case Scene::ST_DEAD:

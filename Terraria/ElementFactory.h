@@ -16,6 +16,8 @@ public:
 
 	void render();
 
+	void setPosition(const glm::vec2 &minCoords);
+
 	void setElementSelected(int selected);
 	Element* getElementSelected();
 
@@ -24,7 +26,7 @@ public:
 	bool craftElement(int type);
 private:
 	int getElementPosition(Element *element);
-
+	void prepareArrays();
 private:
 	TextureGenerator *textGenerator;
 	TextureGenerator *textGeneratorItems;

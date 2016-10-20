@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
 #include "TileMap.h"
+#include "Camera.h"
 #include "Player.h"
 #include "EnemyManager.h"
 
@@ -30,8 +31,12 @@ private:
 private:
 	enum State { ST_MENU, ST_GAME, ST_DEAD, ST_CREDITS };
 	State state;
+	bool firstTime;
+
+	glm::vec2 posTileMap;
 
 	TileMap *map;
+	Camera *camera;
 	Player *player;
 
 	ShaderProgram texProgram;
@@ -41,7 +46,6 @@ private:
 	Menu *menu;
 	Text *text;
 
-	bool firstTime;
 
 	EnemyManager *enemyManager;
 };

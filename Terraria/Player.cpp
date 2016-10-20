@@ -46,11 +46,12 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	direction = LEFT;
 
 	tileMapDispl = tileMapPos;
+	program = shaderProgram;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 
 }
 
-void Player::update(int deltaTime)
+void Player::update(int deltaTime, const glm::ivec2 &posCamera)
 {
 	sprite->update(deltaTime);
 	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
@@ -118,6 +119,33 @@ void Player::update(int deltaTime)
 			}
 		}
 	}
+
+	setElementsPosition(posCamera);
+	if (Game::instance().isMousePressed(0)) {
+		Element* item = getElementSelected();
+		if (dynamic_cast<Weapon*>(item) != 0) {
+			float damage = item->getDamage();
+			// TOOD: Set damage to all enemies within a size of weapon (distance from player)
+			//enemyManager->setDamage(posPlayer, damage, player->getDirection());
+		}
+		else {
+			glm::ivec2 posElement = (Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
+			if (map->insideDistance(posPlayer, posElement, MAXDISTANCE_BUILD)) {
+				posElement /= (glm::ivec2(map->getTileSize(), map->getTileSize()));
+				if (dynamic_cast<Pick*>(item) != 0 && map->getElement(posElement) != NULL) {
+					map->buildElement(posElement, NULL);
+					map->prepareArrays(SCREEN_VEC, program);
+					removeElement(item);
+				}
+				else if (dynamic_cast<Material*>(item) != 0) {
+					map->buildElement(posElement, item->getType());
+					map->prepareArrays(SCREEN_VEC, program);
+					removeElement(item);
+				}
+			}
+		}
+	}
+
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
@@ -136,6 +164,11 @@ void Player::setPosition(const glm::vec2 &pos)
 {
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+}
+
+void Player::setElementsPosition(const glm::vec2 &minCoords)
+{
+	elementFactory->setPosition(minCoords);
 }
 
 void Player::getElement(int type) 

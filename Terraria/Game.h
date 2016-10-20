@@ -8,6 +8,9 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
+#define SCREEN_X 32
+#define SCREEN_Y 16
+#define SCREEN_VEC glm::ivec2(SCREEN_X, SCREEN_Y)
 
 // Game is a singleton (a class with a single instance) that represents our whole application
 

@@ -5,16 +5,17 @@ Text::textType textTypes[1] =
 	{ 32, 32, int('A'), 9, 4, "images/fontMenu.png" }
 };
 
-void Text::init(ShaderProgram &shaderProgram, int type)
+void Text::init(ShaderProgram &shaderProgram, const glm::vec2 &minCoords, int type)
 {
-	textGenerator.init(&shaderProgram, textTypes[type].font,
+	textGenerator = new TextureGenerator();
+	textGenerator->init(&shaderProgram, minCoords, textTypes[type].font,
 		glm::vec2(textTypes[type].tileLengthX, textTypes[type].tileLengthY),
 		textTypes[type].blockSize, textTypes[type].tileSize, textTypes[type].offset);
 }
 
 void Text::render()
 {
-	textGenerator.render();
+	textGenerator->render();
 }
 
 void Text::addText(string text, const glm::vec2 &position)
@@ -25,10 +26,15 @@ void Text::addText(string text, const glm::vec2 &position)
 		tiles[i] = int(c) + 1;
 		i++;
 	}
-	textGenerator.addTiles(tiles, position);
+	textGenerator->addTiles(tiles, position);
 }
 
-void Text::prepareText(const glm::vec2 &minCoords)
+void Text::prepareText()
 {
-	textGenerator.prepareArrays(minCoords);
+	textGenerator->prepareArrays();
+}
+
+void Text::setPosition(const glm::vec2 &minCoord)
+{
+	textGenerator->setPosition(minCoord);
 }

@@ -22,3 +22,8 @@ float Element::getDamage()
 {
 	return damage;
 }
+
+int Element::getTileIndex()
+{
+	return tileIndex;
+}

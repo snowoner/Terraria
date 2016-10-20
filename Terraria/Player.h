@@ -18,7 +18,7 @@ class Player
 
 public:
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
-	void update(int deltaTime);
+	void update(int deltaTime, const glm::ivec2 &posCamera);
 	void render();
 	
 	void setTileMap(TileMap *tileMap);
@@ -32,6 +32,7 @@ public:
 	void setElementSelected(int selected);
 	void removeElement(Element *element);
 	void craftElement(int type);
+	void setElementsPosition(const glm::vec2 &minCoords);
 
 	void receiveDamage(float damage);
 
@@ -44,7 +45,7 @@ private:
 	Texture spritesheet;
 	Sprite *sprite;
 	TileMap *map;
-	
+	ShaderProgram program;
 	ElementFactory *elementFactory;
 
 	float life;
