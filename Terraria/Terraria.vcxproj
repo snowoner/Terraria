@@ -15,6 +15,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementFactory.h" />
+    <ClInclude Include="ElementManager.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyFactory.h" />
     <ClInclude Include="EnemyManager.h" />
@@ -38,6 +39,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementFactory.cpp" />
+    <ClCompile Include="ElementManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="EnemyManager.cpp" />

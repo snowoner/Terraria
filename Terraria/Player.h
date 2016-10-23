@@ -4,7 +4,7 @@
 
 #include "Sprite.h"
 #include "TileMap.h"
-#include "ElementFactory.h"
+#include "ElementManager.h"
 
 
 #define MAXDISTANCE_BUILD 4
@@ -48,7 +48,7 @@ private:
 	Sprite *sprite;
 	TileMap *map;
 	ShaderProgram program;
-	ElementFactory *elementFactory;
+	ElementManager *elementManager;
 
 	float life;
 };

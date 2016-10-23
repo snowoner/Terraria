@@ -19,6 +19,7 @@ public:
 	void setPosition(const glm::vec2 &minCoords);
 
 	void setElementSelected(int selected);
+	Element* getElementByIndex(int index);
 	Element* getElementSelected();
 
 	Element *addElement(int type);
@@ -26,11 +27,7 @@ public:
 	bool craftElement(int type);
 private:
 	int getElementPosition(Element *element);
-	void prepareArrays();
 private:
-	TextureGenerator *textGenerator;
-	TextureGenerator *textGeneratorSel;
-	TextureGenerator *textGeneratorItems;
 
 	vector<Element*> elements;
 	int selected;

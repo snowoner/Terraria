@@ -19,7 +19,7 @@ enum PlayerAnims
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
-	elementFactory = new ElementFactory(tileMapPos, shaderProgram);
+	elementManager = new ElementManager(tileMapPos, shaderProgram);
 	life = 100.f;
 	bJumping = false;
 	spritesheet.loadFromFile("images/bub.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -65,7 +65,7 @@ void Player::update(int deltaTime, const glm::ivec2 &posCamera)
 
 void Player::render()
 {
-	elementFactory->render();
+	elementManager->render();
 	sprite->render();
 }
 
@@ -173,7 +173,7 @@ void Player::playerActions(const glm::ivec2 &posCamera)
 		if (Game::instance().getKey(keyPressed + '0')) found = true;
 		else keyPressed++;
 	}
-	if (found) elementFactory->setElementSelected(keyPressed - 1);
+	if (found) elementManager->setElementSelected(keyPressed - 1);
 }
 
 void Player::setTileMap(TileMap *tileMap)
@@ -189,32 +189,32 @@ void Player::setPosition(const glm::vec2 &pos)
 
 void Player::setElementsPosition(const glm::vec2 &minCoords)
 {
-	elementFactory->setPosition(minCoords);
+	elementManager->setPosition(minCoords);
 }
 
 void Player::getElement(int type)
 {
-	elementFactory->addElement(type);
+	elementManager->addElement(type);
 }
 
 Element* Player::getElementSelected() {
-	return elementFactory->getElementSelected();
+	return elementManager->getElementSelected();
 }
 
 void Player::setElementSelected(int selected)
 {
 	// TODO: selected is a position where the box with the element is.
-	elementFactory->setElementSelected(selected);
+	elementManager->setElementSelected(selected);
 }
 
 void Player::removeElement(Element *element)
 {
-	elementFactory->removeElement(element);
+	elementManager->removeElement(element);
 }
 
 void Player::craftElement(int type)
 {
-	elementFactory->craftElement(type);
+	elementManager->craftElement(type);
 }
 
 void Player::receiveDamage(float damage) {
