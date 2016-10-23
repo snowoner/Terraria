@@ -4,7 +4,7 @@
 #include <GL/glut.h>
 #include "Player.h"
 #include "Game.h"
-
+#include <sstream>
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
@@ -54,6 +54,23 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 void Player::update(int deltaTime, const glm::ivec2 &posCamera)
 {
 	sprite->update(deltaTime);
+
+	playerMovements();
+	setElementsPosition(posCamera);
+
+	playerActions(posCamera);
+
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+}
+
+void Player::render()
+{
+	elementFactory->render();
+	sprite->render();
+}
+
+void Player::playerMovements()
+{
 	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
 		if (sprite->animation() != MOVE_LEFT)
@@ -75,7 +92,7 @@ void Player::update(int deltaTime, const glm::ivec2 &posCamera)
 			sprite->changeAnimation(MOVE_RIGHT);
 			direction = RIGHT;
 		}
-			
+
 		posPlayer.x += 2;
 		if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
@@ -120,7 +137,10 @@ void Player::update(int deltaTime, const glm::ivec2 &posCamera)
 		}
 	}
 
-	setElementsPosition(posCamera);
+}
+
+void Player::playerActions(const glm::ivec2 &posCamera)
+{
 	if (Game::instance().isMousePressed(0)) {
 		Element* item = getElementSelected();
 		if (dynamic_cast<Weapon*>(item) != 0) {
@@ -146,13 +166,14 @@ void Player::update(int deltaTime, const glm::ivec2 &posCamera)
 		}
 	}
 
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-}
-
-void Player::render()
-{
-	elementFactory->render();
-	sprite->render();
+	bool found = false;
+	int keyPressed = 1;
+	while (keyPressed <= MAX_ITEMS_SHOWN && !found)
+	{
+		if (Game::instance().getKey(keyPressed + '0')) found = true;
+		else keyPressed++;
+	}
+	if (found) elementFactory->setElementSelected(keyPressed - 1);
 }
 
 void Player::setTileMap(TileMap *tileMap)
@@ -171,7 +192,7 @@ void Player::setElementsPosition(const glm::vec2 &minCoords)
 	elementFactory->setPosition(minCoords);
 }
 
-void Player::getElement(int type) 
+void Player::getElement(int type)
 {
 	elementFactory->addElement(type);
 }
@@ -180,7 +201,7 @@ Element* Player::getElementSelected() {
 	return elementFactory->getElementSelected();
 }
 
-void Player::setElementSelected(int selected) 
+void Player::setElementSelected(int selected)
 {
 	// TODO: selected is a position where the box with the element is.
 	elementFactory->setElementSelected(selected);

@@ -1,24 +1,37 @@
 #include "ElementFactory.h"
 
 
+#define SLOT_TILESIZEX 300
+#define SLOT_TILESIZEY 56
+#define SLOT_OFFSET 8
+#define MAX_SLOT 5
+
+#define POSINIT glm::vec2(5.f,5.f)
+
 ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram)
 {
 	elements.push_back(new Pick());
 	elements.push_back(new Material());
 	elements.push_back(new Weapon());
-	this->setElementSelected(0);
+	elements.push_back(NULL);
 
 	textGenerator = new TextureGenerator();
 	textGenerator->init(&shaderProgram, minCoords, "images/glass.png",
-		glm::vec2(1, 1),
-		48, 48, 0, true);
+		glm::vec2(1, 1), glm::ivec2(SLOT_TILESIZEX, SLOT_TILESIZEY),
+		glm::ivec2(0,0), 0, true);
+
+	textGeneratorSel = new TextureGenerator();
+	textGeneratorSel->init(&shaderProgram, minCoords, "images/selected.png",
+		glm::vec2(1, 1), glm::ivec2(50, 48),
+		glm::ivec2(0, 0), 0);
 
 	textGeneratorItems = new TextureGenerator();
 	textGeneratorItems->init(&shaderProgram, minCoords, "images/items.png",
-		glm::vec2(3, 1),
-		48, 48, 0);
+		glm::vec2(3, 1), glm::ivec2(48, 48), glm::ivec2(SLOT_TILESIZEX / MAX_SLOT, 0), 0);
 
 	prepareArrays();
+
+	this->setElementSelected(0);
 }
 
 void ElementFactory::prepareArrays()
@@ -26,16 +39,19 @@ void ElementFactory::prepareArrays()
 	textGenerator->removeTiles();
 	textGeneratorItems->removeTiles();
 
-	glm::vec2 position = glm::vec2(5.f, 5.f);
-	vector<int> tiles;
+	vector<int> tiles(1,1);
 	vector<int> tilesItems;
 	for (int i = 0; i < elements.size(); i++) {
-		tiles.push_back(1);
-		tilesItems.push_back(elements[i]->getTileIndex());
+		if (elements[i] != NULL)
+			tilesItems.push_back(elements[i]->getTileIndex());
+		else
+			tilesItems.push_back(NULLTILE);
 	}
 
+	glm::vec2 position = POSINIT;
+
 	textGenerator->addTiles(tiles, position);
-	textGeneratorItems->addTiles(tilesItems, position);
+	textGeneratorItems->addTiles(tilesItems, glm::vec2(position.x + SLOT_OFFSET / 2.f, position.y + SLOT_OFFSET / 2.f));
 
 	textGenerator->prepareArrays();
 	textGeneratorItems->prepareArrays();
@@ -45,6 +61,7 @@ void ElementFactory::prepareArrays()
 void ElementFactory::render()
 {
 	textGenerator->render();
+	textGeneratorSel->render();
 	textGeneratorItems->render();
 	for (Element* element : elements)
 		element->render();
@@ -60,6 +77,11 @@ Element* ElementFactory::addElement(int type)
 void ElementFactory::setElementSelected(int selected)
 {
 	this->selected = selected;
+
+	textGeneratorSel->removeTiles();
+	vector<int> tiles(1, 1);
+	textGeneratorSel->addTiles(tiles, glm::vec2(POSINIT.x + SLOT_OFFSET / 2.f + (selected)*(48.f + SLOT_OFFSET * 1.5f), POSINIT.y + SLOT_OFFSET / 2.f));
+	textGeneratorSel->prepareArrays();
 }
 
 Element* ElementFactory::getElementSelected()
@@ -70,7 +92,11 @@ Element* ElementFactory::getElementSelected()
 void ElementFactory::removeElement(Element *element)
 {
 	int pos = this->getElementPosition(element);
-	if (pos != -1) elements.erase(elements.begin() + pos);
+	if (pos != -1)
+	{
+		delete elements[pos];
+		elements[pos] = NULL;
+	}
 	prepareArrays();
 }
 
@@ -93,5 +119,6 @@ int ElementFactory::getElementPosition(Element *element)
 void ElementFactory::setPosition(const glm::vec2 &minCoords)
 {
 	textGenerator->setPosition(minCoords);
+	textGeneratorSel->setPosition(minCoords);
 	textGeneratorItems->setPosition(minCoords);
 }

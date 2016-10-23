@@ -89,6 +89,7 @@ void Scene::update(int deltaTime)
 	case Scene::ST_GAME:
 		if (Game::instance().getKey(int('m')))
 		{
+			// TODO: position of camera is 1/3. Menu is not shown at center of screen
 			menu->setPosition(camera->getPosition());
 			state = ST_MENU;
 		}

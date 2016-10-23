@@ -5,10 +5,12 @@
 #include "Texture.h"
 #include "ShaderProgram.h"
 
+#define NULLTILE -1
+
 class TextureGenerator
 {
 public:
-	void init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename, glm::ivec2 tileSheetSize, int blockSize, int tileSize, int offset, bool alpha = false);
+	void init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename, glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize, int offset, bool alpha = false);
 	void render() const;
 
 	void setPosition(const glm::vec2 &minCoord);
@@ -22,9 +24,9 @@ private:
 	GLint posLocation, texCoordLocation;
 	bool alphaTex;
 
-	glm::ivec2 tilesheetSize;
+	glm::ivec2 tilesheetSize, blocksize, tilesize;
 	glm::vec2 tileTexSize, position;
-	int blockSize, tileSize, offset;
+	int offset;
 
 	Texture tilesheet;
 

@@ -8,7 +8,7 @@
 #define ARROW_TILESIZE 80
 #define OFFSET 16
 
-#define SCREEN_MIDX SCREEN_WIDTH / 2 - 2 * MENU_TILESIZE
+#define SCREEN_MIDX SCREEN_WIDTH / 2 -  MENU_TILESIZE
 #define SCREEN_MIDY SCREEN_HEIGHT / 2 - MENU_TILESIZE - Menu::MAXOPTIONS / 2.f * (MENU_TILESIZE + OFFSET)
 
 #define ARROW_POS glm::vec2(float(SCREEN_MIDX - (options[posOption].length() / 2.f)  * MENU_TILESIZE - ARROW_TILESIZE) + position.x, float(SCREEN_MIDY + (MENU_TILESIZE + OFFSET)*posOption) + position.y)

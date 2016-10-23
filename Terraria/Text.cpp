@@ -10,7 +10,7 @@ void Text::init(ShaderProgram &shaderProgram, const glm::vec2 &minCoords, int ty
 	textGenerator = new TextureGenerator();
 	textGenerator->init(&shaderProgram, minCoords, textTypes[type].font,
 		glm::vec2(textTypes[type].tileLengthX, textTypes[type].tileLengthY),
-		textTypes[type].blockSize, textTypes[type].tileSize, textTypes[type].offset);
+		glm::ivec2(textTypes[type].blockSize, textTypes[type].blockSize), glm::ivec2(textTypes[type].tileSize, 0), textTypes[type].offset);
 }
 
 void Text::render()

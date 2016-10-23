@@ -8,7 +8,7 @@
 #include "Pick.h"
 #include "Material.h"
 
-
+#define MAX_ITEMS_SHOWN 5
 class ElementFactory
 {
 public:
@@ -29,6 +29,7 @@ private:
 	void prepareArrays();
 private:
 	TextureGenerator *textGenerator;
+	TextureGenerator *textGeneratorSel;
 	TextureGenerator *textGeneratorItems;
 
 	vector<Element*> elements;

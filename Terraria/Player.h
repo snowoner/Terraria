@@ -35,7 +35,9 @@ public:
 	void setElementsPosition(const glm::vec2 &minCoords);
 
 	void receiveDamage(float damage);
-
+private:
+	void playerMovements();
+	void playerActions(const glm::ivec2 &posCamera);
 private:
 	bool bJumping;
 	glm::ivec2 tileMapDispl, posPlayer;
