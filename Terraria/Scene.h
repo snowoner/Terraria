@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Player.h"
 #include "EnemyManager.h"
+#include "ElementManager.h"
 
 #include "Menu.h"
 
@@ -46,8 +47,8 @@ private:
 	Menu *menu;
 	Text *text;
 
-
 	EnemyManager *enemyManager;
+	ElementManager *elementManager;
 };
 
 

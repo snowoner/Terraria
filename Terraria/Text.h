@@ -11,7 +11,8 @@ public:
 
 	void setPosition(const glm::vec2 &minCoord);
 
-	void addText(string text, const glm::vec2 &position);
+	void addText(string text, glm::vec2 &position);
+	void removeTiles();
 	void prepareText();
 public:
 	struct textType {

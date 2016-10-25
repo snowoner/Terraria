@@ -54,9 +54,19 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 void Player::update(int deltaTime, const glm::ivec2 &posCamera)
 {
 	sprite->update(deltaTime);
-
 	playerMovements();
 	setElementsPosition(posCamera);
+	vector<glm::ivec2*> positions = elementManager->getMapMaterialsPosition();
+	int i,j;
+	i = j = 0;
+	for (glm::ivec2* position : positions){
+		if (map->playerSeenBy(posPlayer, *positions[i], 3)) {
+			elementManager->collectElement(i-j);
+			j++;
+		}
+		i++;
+	}
+	elementManager->update(deltaTime);
 
 	playerActions(posCamera);
 
@@ -149,18 +159,19 @@ void Player::playerActions(const glm::ivec2 &posCamera)
 			//enemyManager->setDamage(posPlayer, damage, player->getDirection());
 		}
 		else {
-			glm::ivec2 posElement = (Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
-			if (map->insideDistance(posPlayer, posElement, MAXDISTANCE_BUILD)) {
-				posElement /= (glm::ivec2(map->getTileSize(), map->getTileSize()));
+			glm::ivec2 posElementMap = (Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
+			if (map->insideDistance(posPlayer, posElementMap, MAXDISTANCE_BUILD)) {
+				glm::ivec2 posElement = posElementMap / (glm::ivec2(map->getTileSize(), map->getTileSize()));
 				if (dynamic_cast<Pick*>(item) != 0 && map->getElement(posElement) != NULL) {
 					map->buildElement(posElement, NULL);
 					map->prepareArrays(SCREEN_VEC, program);
-					removeElement(item);
+					elementManager->addElementMaterial(map->getElement(posElement), posElementMap);
 				}
 				else if (dynamic_cast<Material*>(item) != 0) {
 					map->buildElement(posElement, item->getType());
 					map->prepareArrays(SCREEN_VEC, program);
-					removeElement(item);
+
+					elementManager->consumeElement(item,1);
 				}
 			}
 		}
@@ -179,6 +190,7 @@ void Player::playerActions(const glm::ivec2 &posCamera)
 void Player::setTileMap(TileMap *tileMap)
 {
 	map = tileMap;
+	elementManager->setTileMap(tileMap);
 }
 
 void Player::setPosition(const glm::vec2 &pos)

@@ -10,12 +10,12 @@
 class TextureGenerator
 {
 public:
-	void init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename, glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize, int offset, bool alpha = false);
+	void init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename, glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize, int offset = 0, bool alpha = false);
 	void render() const;
 
 	void setPosition(const glm::vec2 &minCoord);
 	void removeTiles();
-	void addTiles(vector<int> tiles, const glm::vec2 &position);
+	void addTiles(vector<int> tiles, glm::vec2 &position);
 	void prepareArrays();
 private:
 	int nTiles;
@@ -30,8 +30,7 @@ private:
 
 	Texture tilesheet;
 
-	vector<glm::vec2> positions;
-	vector< vector<int> > tiles;
+	vector<std::pair<glm::vec2, vector<int>>> tiles;
 };
 
 #endif // _TEXT_GEN_INCLUDE

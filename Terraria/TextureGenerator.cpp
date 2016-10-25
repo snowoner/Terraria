@@ -1,7 +1,9 @@
 #include "TextureGenerator.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-void TextureGenerator::init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename, glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize, int textoffset, bool alpha)
+void TextureGenerator::init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename, 
+	glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize, 
+	int textoffset, bool alpha)
 {
 	tilesheet.loadFromFile(filename, TEXTURE_PIXEL_FORMAT_RGBA);
 	tilesheet.setWrapS(GL_CLAMP_TO_EDGE);
@@ -15,8 +17,10 @@ void TextureGenerator::init(ShaderProgram *program, const glm::vec2 &minCoords, 
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
 	alphaTex = alpha;
 	shaderProgram = program;
-
 	position = minCoords; 
+
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
 }
 
 void TextureGenerator::render() const
@@ -43,13 +47,11 @@ void TextureGenerator::setPosition(const glm::vec2 &minCoord)
 
 void TextureGenerator::removeTiles()
 {
-	positions.clear();
 	tiles.clear();
 }
 
-void TextureGenerator::addTiles(vector<int> tile, const glm::vec2 &position) {
-	positions.push_back(position);
-	tiles.push_back(tile);
+void TextureGenerator::addTiles(vector<int> tile, glm::vec2 &position) {
+	tiles.push_back(std::pair<glm::vec2, vector<int>>(position,tile));
 }
 
 void TextureGenerator::prepareArrays()
@@ -60,12 +62,11 @@ void TextureGenerator::prepareArrays()
 
 	nTiles = 0;
 	halfTexel = glm::vec2(0.5f / tilesheet.width(), 0.5f / tilesheet.height());
-	std::vector<glm::vec2>::iterator itPositions = positions.begin();
 
-	for (std::vector<vector<int>>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
-		posTile = (glm::vec2)*itPositions;
+	for (std::vector<pair<glm::vec2,vector<int>>>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
+		posTile = it->first;
 
-		for (int c : *it) {
+		for (int c : it->second) {
 			if (c != NULLTILE) {
 				nTiles++;
 				tile = c - offset;
@@ -92,13 +93,10 @@ void TextureGenerator::prepareArrays()
 			posTile.x += tilesize.x;
 			posTile.y += tilesize.y;
 		}
-		++itPositions;
 	}
-	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 24 * nTiles * sizeof(float), &vertices[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 24 * nTiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 	posLocation = shaderProgram->bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
 	texCoordLocation = shaderProgram->bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 }

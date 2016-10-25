@@ -18,12 +18,12 @@ vector<Element*> Element::getCraftingMaterials() {
 	return craftingMaterials;
 }
 
-float Element::getDamage()
+void Element::add(int quantity)
 {
-	return damage;
+	this->quantity += quantity;
 }
 
-int Element::getTileIndex()
+void Element::consume(int quantity)
 {
-	return tileIndex;
+	this->quantity -= quantity;
 }

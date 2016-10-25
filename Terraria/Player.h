@@ -37,6 +37,7 @@ public:
 	void receiveDamage(float damage);
 private:
 	void playerMovements();
+	void materialsMovements();
 	void playerActions(const glm::ivec2 &posCamera);
 private:
 	bool bJumping;

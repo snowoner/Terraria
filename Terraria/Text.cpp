@@ -1,8 +1,9 @@
 #include "Text.h"
 
-Text::textType textTypes[1] =
+Text::textType textTypes[2] =
 {
-	{ 32, 32, int('A'), 9, 4, "images/fontMenu.png" }
+	{ 32, 32, int('A'), 9, 4, "images/fontMenu.png" },
+	{ 8, 8, int('0'), 5, 2, "images/numbers.png" }
 };
 
 void Text::init(ShaderProgram &shaderProgram, const glm::vec2 &minCoords, int type)
@@ -18,7 +19,7 @@ void Text::render()
 	textGenerator->render();
 }
 
-void Text::addText(string text, const glm::vec2 &position)
+void Text::addText(string text, glm::vec2 &position)
 {
 	vector<int> tiles = vector<int>(text.length());
 	int i = 0;
@@ -27,6 +28,11 @@ void Text::addText(string text, const glm::vec2 &position)
 		i++;
 	}
 	textGenerator->addTiles(tiles, position);
+}
+
+void Text::removeTiles()
+{
+	textGenerator->removeTiles();
 }
 
 void Text::prepareText()

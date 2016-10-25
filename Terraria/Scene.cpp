@@ -68,6 +68,8 @@ void Scene::update(int deltaTime)
 					enemyManager->setTileMap(map);
 					enemyManager->addEnemy();
 
+					elementManager = new ElementManager(SCREEN_VEC, texProgram);
+					
 					firstTime = false;
 				}
 				state = ST_GAME;
@@ -104,6 +106,7 @@ void Scene::update(int deltaTime)
 			player->update(deltaTime, posCamera);
 			projection = glm::ortho(float(posCamera.x), float(posCamera.x + SCREEN_WIDTH - 1), float(posCamera.y + SCREEN_HEIGHT - 1), float(posCamera.y));
 
+			//elementManager->update(deltaTime);
 
 			/*
 			for (unsigned int i = 0; i < enemies.size(); ++i) {
