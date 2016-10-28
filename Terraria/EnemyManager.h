@@ -18,7 +18,6 @@ public:
 	} enemySprite;
 
 	EnemyManager(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
-	~EnemyManager();
 	
 	void update(int deltaTime, const glm::vec2 &pos);
 	void render();
@@ -29,8 +28,7 @@ public:
 	void setDamage(const glm::vec2 posPlayer, int damage, int direction);
 private:
 	glm::vec2 tileMapDispl;
-	TileMap *map;
-	
+
 	EnemyFactory *enemyFactory;
 	vector<EnemySprite*> *enemySprites;
 

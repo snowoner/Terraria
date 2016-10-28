@@ -12,15 +12,15 @@
 Scene::Scene()
 {
 	map = NULL;
-	player = NULL;
+	playerManager = NULL;
 }
 
 Scene::~Scene()
 {
 	if (map != NULL)
 		delete map;
-	if (player != NULL)
-		delete player;
+	if (playerManager != NULL)
+		delete playerManager;
 }
 
 
@@ -57,11 +57,11 @@ void Scene::update(int deltaTime)
 					map->free();
 					map = TileMap::createTileMap("levels/level01.txt", SCREEN_VEC, texProgram);
 
-					player = new Player();
-					player->init(SCREEN_VEC, texProgram);
 					glm::vec2 posPlayer = glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize());
-					player->setPosition(posPlayer);
-					player->setTileMap(map);
+					playerManager = new PlayerManager();
+					playerManager->init(SCREEN_VEC, texProgram);
+					playerManager->setPosition(posPlayer);
+					playerManager->setTileMap(map);
 					camera->update(deltaTime, posPlayer, glm::vec2(1, 1));
 
 					enemyManager = new EnemyManager(SCREEN_VEC, texProgram);
@@ -69,6 +69,7 @@ void Scene::update(int deltaTime)
 					enemyManager->addEnemy();
 
 					elementManager = new ElementManager(SCREEN_VEC, texProgram);
+					elementManager->setTileMap(map);
 					
 					firstTime = false;
 				}
@@ -96,17 +97,21 @@ void Scene::update(int deltaTime)
 			state = ST_MENU;
 		}
 		else {
-			glm::vec2 posPlayer = player->getPosition();
+			glm::vec2 posPlayer = playerManager->getPosition();
 			// TODO: only update camera when players moves
 			camera->update(deltaTime, posPlayer, glm::vec2(1, 1));
-			enemyManager->update(deltaTime, posPlayer);
-
-			glm::vec2 posCamera = camera->getPosition();
-			
-			player->update(deltaTime, posCamera);
+			glm::ivec2 posCamera = camera->getPosition();
 			projection = glm::ortho(float(posCamera.x), float(posCamera.x + SCREEN_WIDTH - 1), float(posCamera.y + SCREEN_HEIGHT - 1), float(posCamera.y));
 
-			//elementManager->update(deltaTime);
+			playerActions(posPlayer, posCamera);
+			elementCollecion(posPlayer);
+
+			enemyManager->update(deltaTime, posPlayer);
+			elementManager->update(deltaTime);
+			playerManager->update(deltaTime);
+
+			elementManager->setPosition(posCamera);
+
 
 			/*
 			for (unsigned int i = 0; i < enemies.size(); ++i) {
@@ -155,8 +160,9 @@ void Scene::render()
 		menu->render();
 		break;
 	case Scene::ST_GAME:
-		player->render();
+		elementManager->render();
 		enemyManager->render();
+		playerManager->render();
 		break;
 	case Scene::ST_DEAD:
 		text->render();
@@ -196,4 +202,49 @@ void Scene::initShaders()
 	texProgram.bindFragmentOutput("outColor");
 	vShader.free();
 	fShader.free();
+}
+
+void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera)
+{
+	if (Game::instance().isMousePressed(0)) {
+		Element* item = elementManager->getElementSelected();
+		if (dynamic_cast<Weapon*>(item) != 0) {
+			float damage = item->getDamage();
+			// TOOD: Set damage to all enemies within a size of weapon (distance from player)
+			//enemyManager->setDamage(posPlayer, damage, player->getDirection());
+		}
+		else {
+			glm::ivec2 posElementMap = (Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
+			if (map->insideDistance(posPlayer, posElementMap, MAXDISTANCE_BUILD)) {
+				glm::ivec2 posElement = posElementMap / (glm::ivec2(map->getTileSize(), map->getTileSize()));
+				if (dynamic_cast<Pick*>(item) != 0 && map->getElement(posElement) != NULL) {
+					map->buildElement(posElement, NULL);
+					map->prepareArrays(SCREEN_VEC, false);
+					elementManager->addElementMaterial(map->getElement(posElement), posElementMap);
+				}
+				else if (dynamic_cast<Material*>(item) != 0) {
+					if (map->getElement(posElement) == NULL) {
+						map->buildElement(posElement, item->getType());
+						map->prepareArrays(SCREEN_VEC, false);
+
+						elementManager->consumeElement(item, 1);
+					}
+				}
+			}
+		}
+	}
+}
+
+void Scene::elementCollecion(const glm::ivec2 &posPlayer)
+{
+	vector<glm::ivec2*> positions = elementManager->getMapMaterialsPosition();
+	int i, j;
+	i = j = 0;
+	for (glm::ivec2* position : positions){
+		if (map->playerSeenBy(posPlayer, *positions[i], 3)) {
+			elementManager->collectElement(i - j);
+			j++;
+		}
+		i++;
+	}
 }

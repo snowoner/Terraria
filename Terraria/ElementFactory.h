@@ -15,7 +15,7 @@ class ElementFactory
 public:
 	ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram);
 
-	void update(float deltaTime);
+	void update(int deltaTime);
 	void render();
 
 	void setPosition(const glm::vec2 &minCoords);
@@ -37,7 +37,7 @@ public:
 private:
 	int getElementPosition(Element *element);
 private:
-	float updateTime;
+	int updateTime;
 
 	vector<Element*> elements;
 	int selected;

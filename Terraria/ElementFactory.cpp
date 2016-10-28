@@ -1,6 +1,6 @@
 #include "ElementFactory.h"
 
-#define MAXUPDATE_TIME 1000.f/16.f
+#define MAXUPDATE_TIME 1000/16
 
 ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram)
 {
@@ -10,12 +10,10 @@ ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shade
 	elements.push_back(NULL);
 	elements.push_back(NULL);
 
-	updateTime = 0.f;
-
-	//positionMapMaterials = new vector<glm::ivec2*>();
+	updateTime = 0;
 }
 
-void ElementFactory::update(float deltaTime)
+void ElementFactory::update(int deltaTime)
 {
 	updateTime += deltaTime;
 	if (updateTime >= MAXUPDATE_TIME)
@@ -23,7 +21,7 @@ void ElementFactory::update(float deltaTime)
 		updateTime -= MAXUPDATE_TIME;
 		for (glm::ivec2 *position : positionMapMaterials)
 		{
-			position->y += 2.f;
+			position->y += 2;
 			map->collisionMoveDown(*position, glm::ivec2(32, 32), &(position->y));
 		}
 	}

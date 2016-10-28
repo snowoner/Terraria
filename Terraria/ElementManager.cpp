@@ -1,4 +1,5 @@
 #include "ElementManager.h"
+#include "Game.h"
 
 #define SLOT_TILESIZEX 300
 #define SLOT_TILESIZEY 56
@@ -91,9 +92,20 @@ void ElementManager::prepareSpritesMaterials() {
 	}
 }
 
-void ElementManager::update(float deltaTime)
+void ElementManager::update(int deltaTime)
 {
+	bool found = false;
+	int keyPressed = 1;
+	while (keyPressed <= MAX_ITEMS_SHOWN && !found)
+	{
+		if (Game::instance().getKey(keyPressed + '0')) found = true;
+		else keyPressed++;
+	}
+	if (found) setElementSelected(keyPressed - 1);
+
+
 	elementFactory->update(deltaTime);
+
 	prepareSpritesMaterials();
 }
 

@@ -21,7 +21,8 @@ TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProg
 	loadLevel(levelFile);
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
-	prepareArrays(minCoords, program);
+	this->program = &program;
+	prepareArrays(minCoords);
 }
 
 TileMap::~TileMap()
@@ -104,7 +105,7 @@ bool TileMap::loadLevel(const string &levelFile)
 	return true;
 }
 
-void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program, bool init)
+void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 {
 	nTiles = 0;
 	int tile;
@@ -181,8 +182,8 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program, 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * nTiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-	posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
-	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+	posLocation = program->bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
+	texCoordLocation = program->bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 }
 
 // Build Material

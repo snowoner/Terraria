@@ -5,7 +5,7 @@
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Camera.h"
-#include "Player.h"
+#include "PlayerManager.h"
 #include "EnemyManager.h"
 #include "ElementManager.h"
 
@@ -29,6 +29,8 @@ public:
 
 private:
 	void initShaders();
+	void playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera);
+	void elementCollecion(const glm::ivec2 &posPlayer);
 private:
 	enum State { ST_MENU, ST_GAME, ST_DEAD, ST_CREDITS };
 	State state;
@@ -38,7 +40,7 @@ private:
 
 	TileMap *map;
 	Camera *camera;
-	Player *player;
+	PlayerManager *playerManager;
 
 	ShaderProgram texProgram;
 	float currentTime;

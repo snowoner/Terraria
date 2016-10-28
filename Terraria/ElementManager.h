@@ -9,7 +9,7 @@ class ElementManager
 public:
 	ElementManager(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram);
 	
-	void update(float deltaTime);
+	void update(int deltaTime);
 	void render();
 
 	void setPosition(const glm::vec2 &minCoords);

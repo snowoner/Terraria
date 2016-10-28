@@ -32,7 +32,7 @@ public:
 	
 	int getTileSize() const { return tileSize; }
 
-	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program, bool init = true);
+	void prepareArrays(const glm::vec2 &minCoords, bool init = true);
 
 	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
@@ -52,6 +52,7 @@ private:
 private:
 	GLuint vao;
 	GLuint vbo;
+	ShaderProgram *program;
 	GLint posLocation, texCoordLocation;
 	glm::ivec2 position, mapSize, tilesheetSize;
 	int tileSize, blockSize;

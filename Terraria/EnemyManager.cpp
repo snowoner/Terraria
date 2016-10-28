@@ -12,19 +12,13 @@ EnemyManager::EnemyManager(const glm::ivec2 &tileMapPos, ShaderProgram &shaderPr
 	enemySprites->push_back(&enemySprite);
 }
 
-
-EnemyManager::~EnemyManager()
-{
-}
-
 void EnemyManager::addEnemy() {
 	enemyFactory->createEnemy(0, *(enemySprites->at(0)->sprite));
 }
 
 void EnemyManager::setTileMap(TileMap *tileMap)
 {
-	map = tileMap;
-	enemyFactory->setTileMap(map);
+	enemyFactory->setTileMap(tileMap);
 }
 
 void EnemyManager::update(int deltaTime, const glm::vec2 &pos) {
