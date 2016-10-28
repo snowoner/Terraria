@@ -77,7 +77,7 @@ void ElementFactory::collectElement(int index)
 	bool found = false;
 	int firstNull = -1;
 	for (unsigned int i = 0; i < elements.size(); ++i){
-		if (elements[i] == NULL) firstNull = i;
+		if (elements.at(i) == NULL && firstNull == -1) firstNull = i;
 		if (dynamic_cast<Material*>(elements[i])) {
 			elements[i]->add(1);
 			found = true;

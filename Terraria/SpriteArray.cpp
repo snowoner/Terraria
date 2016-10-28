@@ -1,7 +1,7 @@
-#include "TextureGenerator.h"
+#include "SpriteArray.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-void TextureGenerator::init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename, 
+void SpriteArray::init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename,
 	glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize, 
 	int textoffset, bool alpha)
 {
@@ -23,7 +23,7 @@ void TextureGenerator::init(ShaderProgram *program, const glm::vec2 &minCoords, 
 	glGenBuffers(1, &vbo);
 }
 
-void TextureGenerator::render() const
+void SpriteArray::render() const
 {
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
@@ -40,21 +40,21 @@ void TextureGenerator::render() const
 	glDisable(GL_TEXTURE_2D);
 }
 
-void TextureGenerator::setPosition(const glm::vec2 &minCoord)
+void SpriteArray::setPosition(const glm::vec2 &minCoord)
 {
 	position = minCoord;
 }
 
-void TextureGenerator::removeTiles()
+void SpriteArray::removeTiles()
 {
 	tiles.clear();
 }
 
-void TextureGenerator::addTiles(vector<int> tile, glm::vec2 &position) {
+void SpriteArray::addTiles(vector<int> tile, glm::vec2 &position) {
 	tiles.push_back(std::pair<glm::vec2, vector<int>>(position,tile));
 }
 
-void TextureGenerator::prepareArrays()
+void SpriteArray::prepareArrays()
 {
 	int tile;
 	glm::vec2 posTile, texCoordTile[2], halfTexel;

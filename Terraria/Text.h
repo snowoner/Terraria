@@ -1,7 +1,7 @@
 #ifndef _TEXT_INCLUDE
 #define _TEXT_INCLUDE
 
-#include "TextureGenerator.h"
+#include "SpriteArray.h"
 
 class Text
 {
@@ -21,7 +21,7 @@ public:
 		char *font;
 	};
 private:
-	TextureGenerator *textGenerator;
+	SpriteArray *text;
 };
 
 #endif // _TEXT_INCLUDE

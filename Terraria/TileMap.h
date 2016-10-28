@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include "Texture.h"
 #include "ShaderProgram.h"
+#include <vector>
 
 #define LEFT 0
 #define RIGHT 1
@@ -31,7 +32,7 @@ public:
 	
 	int getTileSize() const { return tileSize; }
 
-	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
+	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program, bool init = true);
 
 	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
@@ -56,9 +57,10 @@ private:
 	int tileSize, blockSize;
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
+
 	int *map;
 	int nTiles;
-
+	vector<float> vertices;
 };
 
 

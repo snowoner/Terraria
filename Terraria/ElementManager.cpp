@@ -9,7 +9,7 @@
 
 #define ITEM_BLOCKSIZE 56.f
 
-enum textGenerators {
+enum spriteTypes {
 	SLOTS, SELECTION, ITEMS, MATERIALS
 };
 
@@ -17,42 +17,42 @@ ElementManager::ElementManager(const glm::ivec2 &minCoords, ShaderProgram &shade
 {
 	elementFactory = new ElementFactory(minCoords, shaderProgram);
 
-	textGenerator = new TextureGenerator*[sizeof(textGenerators)]();
+	sprites = new SpriteArray*[sizeof(spriteTypes)]();
 
-	textGenerator[SLOTS] = new TextureGenerator();
-	textGenerator[SLOTS]->init(&shaderProgram, minCoords, "images/slots.png",
+	sprites[SLOTS] = new SpriteArray();
+	sprites[SLOTS]->init(&shaderProgram, minCoords, "images/slots.png",
 		glm::vec2(1, 1), glm::ivec2(SLOT_TILESIZEX, SLOT_TILESIZEY), glm::ivec2(0, 0), 0, true);
 
-	textGenerator[SELECTION] = new TextureGenerator();
-	textGenerator[SELECTION]->init(&shaderProgram, minCoords, "images/selected.png",
+	sprites[SELECTION] = new SpriteArray();
+	sprites[SELECTION]->init(&shaderProgram, minCoords, "images/selected.png",
 		glm::vec2(1, 1), glm::ivec2(ITEM_BLOCKSIZE, ITEM_BLOCKSIZE), glm::ivec2(0, 0));
 
-	textGenerator[ITEMS] = new TextureGenerator();
-	textGenerator[ITEMS]->init(&shaderProgram, minCoords, "images/items.png",
+	sprites[ITEMS] = new SpriteArray();
+	sprites[ITEMS]->init(&shaderProgram, minCoords, "images/items.png",
 		glm::vec2(3, 1), glm::ivec2(ITEM_BLOCKSIZE - SLOT_OFFSET * 2, ITEM_BLOCKSIZE - SLOT_OFFSET * 2), glm::ivec2(SLOT_TILESIZEX / MAX_SLOT, 0));
 
-	textGenerator[MATERIALS] = new TextureGenerator();
-	textGenerator[MATERIALS]->init(&shaderProgram, minCoords, "images/items.png",
+	sprites[MATERIALS] = new SpriteArray();
+	sprites[MATERIALS]->init(&shaderProgram, minCoords, "images/items.png",
 		glm::vec2(3, 1), glm::ivec2(32, 32), glm::ivec2(0, 0));
 
-	textGenerator[SLOTS]->removeTiles();
-	textGenerator[SLOTS]->addTiles(vector<int>(1, 1), POSINIT);
-	textGenerator[SLOTS]->prepareArrays();
-	textGenerator[SELECTION]->removeTiles();
-	textGenerator[SELECTION]->addTiles(vector<int>(1, 1), POSINIT);
-	textGenerator[SELECTION]->prepareArrays();
+	sprites[SLOTS]->removeTiles();
+	sprites[SLOTS]->addTiles(vector<int>(1, 1), POSINIT);
+	sprites[SLOTS]->prepareArrays();
+	sprites[SELECTION]->removeTiles();
+	sprites[SELECTION]->addTiles(vector<int>(1, 1), POSINIT);
+	sprites[SELECTION]->prepareArrays();
 	
 
 	text = new Text();
 	text->init(shaderProgram, minCoords, 1);
-	prepareTextGeneratorItems();
+	prepareSpritesItems();
 
 	setElementSelected(0);
 }
 
-void ElementManager::prepareTextGeneratorItems()
+void ElementManager::prepareSpritesItems()
 {
-	textGenerator[ITEMS]->removeTiles();
+	sprites[ITEMS]->removeTiles();
 	text->removeTiles();
 
 	vector<int> tilesItems;
@@ -72,33 +72,37 @@ void ElementManager::prepareTextGeneratorItems()
 
 	text->prepareText();
 
-	textGenerator[ITEMS]->addTiles(tilesItems, POSINIT + glm::vec2(SLOT_OFFSET, SLOT_OFFSET));
-	textGenerator[ITEMS]->prepareArrays();
+	sprites[ITEMS]->addTiles(tilesItems, POSINIT + glm::vec2(SLOT_OFFSET, SLOT_OFFSET));
+	sprites[ITEMS]->prepareArrays();
+}
+
+void ElementManager::prepareSpritesMaterials() {
+
+	vector<glm::ivec2*> positionMapMaterials = elementFactory->getMapMaterialsPosition();
+	if (positionMapMaterials.size() > 0)
+	{
+		sprites[MATERIALS]->removeTiles();
+
+		for (unsigned int i = 0; i < positionMapMaterials.size(); ++i){
+			glm::ivec2* pos = positionMapMaterials[i];
+			sprites[MATERIALS]->addTiles(vector<int>(1, 3), glm::vec2(*pos));
+		}
+		sprites[MATERIALS]->prepareArrays();
+	}
 }
 
 void ElementManager::update(float deltaTime)
 {
 	elementFactory->update(deltaTime);
-
-	vector<glm::ivec2*> positionMapMaterials = elementFactory->getMapMaterialsPosition();
-	if (positionMapMaterials.size() > 0)
-	{
-		textGenerator[MATERIALS]->removeTiles();
-
-		for (unsigned int i = 0; i < positionMapMaterials.size(); ++i){
-			glm::ivec2* pos = positionMapMaterials[i];
-			textGenerator[MATERIALS]->addTiles(vector<int>(1, 3), glm::vec2(*pos));
-		}
-		textGenerator[MATERIALS]->prepareArrays();
-	}
+	prepareSpritesMaterials();
 }
 
 // TODO: only render it when player change some weapon and at init
 void ElementManager::render()
 {
-	for (unsigned int i = 0; i < sizeof(textGenerators)-1; ++i)
-		textGenerator[i]->render();
-	if (elementFactory->getMapMaterialsPosition().size() > 0) textGenerator[MATERIALS]->render();
+	for (unsigned int i = 0; i < sizeof(sprites)-1; ++i)
+		sprites[i]->render();
+	if (elementFactory->getMapMaterialsPosition().size() > 0) sprites[MATERIALS]->render();
 	text->render();
 	elementFactory->render();
 }
@@ -127,14 +131,13 @@ Element* ElementManager::getElementSelected()
 void ElementManager::consumeElement(Element *element, int quantity)
 {
 	elementFactory->consumeElement(element, quantity);
-	if (elementFactory->getElementSelected() == NULL)
-		prepareTextGeneratorItems();
+	prepareSpritesItems();
 }
 
 void ElementManager::removeElement(Element *element)
 {
 	elementFactory->removeElement(element);
-	prepareTextGeneratorItems();
+	prepareSpritesItems();
 }
 
 bool ElementManager::craftElement(int type)
@@ -144,9 +147,9 @@ bool ElementManager::craftElement(int type)
 
 void ElementManager::setPosition(const glm::vec2 &minCoords)
 {
-	textGenerator[SLOTS]->setPosition(minCoords);
-	textGenerator[SELECTION]->setPosition(minCoords + glm::vec2((elementFactory->getIndexElementSelected())*(ITEM_BLOCKSIZE + SLOT_OFFSET*1.33f), 0.f));
-	textGenerator[ITEMS]->setPosition(minCoords);
+	sprites[SLOTS]->setPosition(minCoords);
+	sprites[SELECTION]->setPosition(minCoords + glm::vec2((elementFactory->getIndexElementSelected())*(ITEM_BLOCKSIZE + SLOT_OFFSET*1.33f), 0.f));
+	sprites[ITEMS]->setPosition(minCoords);
 	text->setPosition(minCoords);
 	//textGenerator[MATERIALS]->setPosition(minCoords);
 }
@@ -160,17 +163,8 @@ void ElementManager::addElementMaterial(int type, glm::ivec2 position)
 void ElementManager::collectElement(int index)
 {
 	elementFactory->collectElement(index);
-	prepareTextGeneratorItems();
-	textGenerator[MATERIALS]->removeTiles();
-	vector<glm::ivec2*> positionMapMaterials = elementFactory->getMapMaterialsPosition();
-	if (positionMapMaterials.size() > 0)
-	{
-		for (unsigned int i = 0; i < positionMapMaterials.size(); ++i){
-			glm::ivec2* pos = positionMapMaterials[i];
-			textGenerator[MATERIALS]->addTiles(vector<int>(1, 3), glm::vec2(*pos));
-		}
-		textGenerator[MATERIALS]->prepareArrays();
-	}
+	prepareSpritesItems();
+	prepareSpritesMaterials();
 }
 
 vector<glm::ivec2*> ElementManager::getMapMaterialsPosition()

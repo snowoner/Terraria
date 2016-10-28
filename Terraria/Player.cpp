@@ -164,14 +164,16 @@ void Player::playerActions(const glm::ivec2 &posCamera)
 				glm::ivec2 posElement = posElementMap / (glm::ivec2(map->getTileSize(), map->getTileSize()));
 				if (dynamic_cast<Pick*>(item) != 0 && map->getElement(posElement) != NULL) {
 					map->buildElement(posElement, NULL);
-					map->prepareArrays(SCREEN_VEC, program);
+					map->prepareArrays(SCREEN_VEC, program,false);
 					elementManager->addElementMaterial(map->getElement(posElement), posElementMap);
 				}
 				else if (dynamic_cast<Material*>(item) != 0) {
-					map->buildElement(posElement, item->getType());
-					map->prepareArrays(SCREEN_VEC, program);
+					if (map->getElement(posElement) == NULL) {
+						map->buildElement(posElement, item->getType());
+						map->prepareArrays(SCREEN_VEC, program, false);
 
-					elementManager->consumeElement(item,1);
+						elementManager->consumeElement(item, 1);
+					}
 				}
 			}
 		}

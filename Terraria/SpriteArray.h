@@ -1,5 +1,5 @@
-#ifndef _TEXT_GEN_INCLUDE
-#define _TEXT_GEN_INCLUDE
+#ifndef _SPRITE_ARRAY_INCLUDE
+#define _SPRITE_ARRAY_INCLUDE
 
 #include <vector>
 #include "Texture.h"
@@ -7,7 +7,7 @@
 
 #define NULLTILE -1
 
-class TextureGenerator
+class SpriteArray
 {
 public:
 	void init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename, glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize, int offset = 0, bool alpha = false);
@@ -33,4 +33,4 @@ private:
 	vector<std::pair<glm::vec2, vector<int>>> tiles;
 };
 
-#endif // _TEXT_GEN_INCLUDE
+#endif // _SPRITE_ARRAY_INCLUDE

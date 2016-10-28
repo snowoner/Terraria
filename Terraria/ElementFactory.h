@@ -1,7 +1,7 @@
 #ifndef _ELEMENTFACTORY_INCLUDE
 #define _ELEMENTFACTORY_INCLUDE
 
-#include "TextureGenerator.h"
+#include "SpriteArray.h"
 #include "Element.h"
 #include "Sprite.h"
 #include "Weapon.h"

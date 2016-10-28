@@ -30,7 +30,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureGenerator.h" />
+    <ClInclude Include="SpriteArray.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="Zombie.h" />
@@ -55,7 +55,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureGenerator.cpp" />
+    <ClCompile Include="SpriteArray.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="Zombie.cpp" />

@@ -30,9 +30,10 @@ public:
 
 	void setTileMap(TileMap *tileMap);
 private:
-	void prepareTextGeneratorItems();
+	void prepareSpritesItems();
+	void prepareSpritesMaterials();
 private:
-	TextureGenerator **textGenerator;
+	SpriteArray **sprites;
 	ElementFactory *elementFactory;
 	Text *text;
 };
