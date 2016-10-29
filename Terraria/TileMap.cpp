@@ -4,9 +4,7 @@
 #include <vector>
 #include "TileMap.h"
 
-
-using namespace std;
-
+int hitsTile[2] = { 2, 3 };
 
 TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
 {
@@ -54,7 +52,7 @@ bool TileMap::loadLevel(const string &levelFile)
 	ifstream fin;
 	string line, tilesheetFile;
 	stringstream sstream;
-	char tile;
+	int tile;
 
 	fin.open(levelFile.c_str());
 	if (!fin.is_open())
@@ -81,21 +79,20 @@ bool TileMap::loadLevel(const string &levelFile)
 	sstream >> tilesheetSize.x >> tilesheetSize.y;
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
 
-	map = new int[mapSize.x * mapSize.y];
-
-
-
+	map = new Brick *[mapSize.x * mapSize.y];
 	for (int j = 0; j < mapSize.y; j++)
 	{
 		for (int i = 0; i < mapSize.x; i++)
 		{
-			fin.get(tile);
-			if (tile == ' ')
-				map[j*mapSize.x + i] = 0;
-			else
-				map[j*mapSize.x + i] = tile - int('0');
+			fin >> tile;
+			fin.get();
+			if (tile == 0)
+				map[j*mapSize.x + i] = NULL;
+			else {
+				map[j*mapSize.x + i] = new Brick(tile, hitsTile[(tile - 1) / tilesheetSize.x]);
+			}
 		}
-		fin.get(tile);
+		fin.get();
 #ifndef _WIN32
 		fin.get(tile);
 #endif
@@ -111,7 +108,6 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 	int tile;
 	glm::vec2 posTile, texCoordTile[2], halfTexel;
 
-	halfTexel = glm::vec2(0.5f / tilesheet.width(), 0.5f / tilesheet.height());
 	int n = 0;
 	if (init)
 	{
@@ -119,15 +115,14 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 		{
 			for (int i = 0; i < mapSize.x; i++)
 			{
-				tile = map[j * mapSize.x + i];
-				if (tile != 0)
+				if (map[j * mapSize.x + i] != NULL)
 				{
+					tile = map[j * mapSize.x + i]->getType();
 					// Non-empty tile
 					nTiles++;
 					posTile = glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize);
-					texCoordTile[0] = glm::vec2(float((tile - 1) % 2) / tilesheetSize.x, float((tile - 1) / 2) / tilesheetSize.y);
+					texCoordTile[0] = glm::vec2(float((tile - 1) % tilesheetSize.x) / tilesheetSize.x, float((tile - 1) / tilesheetSize.x) / tilesheetSize.y);
 					texCoordTile[1] = texCoordTile[0] + tileTexSize;
-					texCoordTile[1] -= halfTexel;
 					// First triangle
 					vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 					vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
@@ -151,14 +146,14 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 		{
 			for (int i = 0; i < mapSize.x; i++)
 			{
-				tile = map[j * mapSize.x + i];
-				if (tile != 0)
+				if (map[j * mapSize.x + i] != NULL)
 				{
+					tile = map[j * mapSize.x + i]->getType();
 					nTiles++;
 					posTile = glm::vec2(minCoords.x + i*tileSize, minCoords.y + j *tileSize);
-					texCoordTile[0] = glm::vec2(float((tile - 1) % 2) / tilesheetSize.x, float((tile - 1) / 2) / tilesheetSize.y);
+					texCoordTile[0] = glm::vec2(float((tile - 1) % tilesheetSize.x) / tilesheetSize.x, float((tile - 1) / tilesheetSize.x) / tilesheetSize.y);
 					texCoordTile[1] = texCoordTile[0] + tileTexSize;
-					texCoordTile[1] -= halfTexel;
+
 					// First triangle
 					vertices[n] = posTile.x; vertices[n + 1] = posTile.y;
 					vertices[n + 2] = texCoordTile[0].x; vertices[n + 3] = texCoordTile[0].y;
@@ -190,18 +185,38 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 void TileMap::buildElement(glm::ivec2 posElement, int type)
 {
 	// Do it to TileMap (getting material with player.removeElement()) and building it in tileMap
-	map[posElement.y*mapSize.x + posElement.x] = type;
+	map[posElement.y*mapSize.x + posElement.x] = (type == 0) ? NULL : new Brick(type, hitsTile[(type + 1) / 2 - 1]);
 	vertices.resize(vertices.size() + ((type == 0) ? -1 : 1) * 24);
-
 }
 
-// Get Material
-int TileMap::getElement(glm::ivec2 posElement)
+int TileMap::getElementType(glm::ivec2 posElement)
 {
 	// Do it to TileMap (getting material with player.removeElement()) and building it in tileMap
-	return map[posElement.y*mapSize.x + posElement.x];
+	if (map[posElement.y*mapSize.x + posElement.x] == NULL) return NULL;
+	return map[posElement.y*mapSize.x + posElement.x]->getType() / tilesheetSize.x + 1;
 }
 
+void TileMap::hitElement(glm::ivec2 posElement)
+{
+	int pos = posElement.y*mapSize.x + posElement.x;
+	if (!map[pos] == NULL)
+	{
+		map[pos]->hit();
+		if (map[pos]->gethits() == 0) buildElement(posElement, NULL);
+		else {
+			int type = map[pos]->getType();
+			if (type % 5 == 1) type++;
+			type++;
+			map[pos]->setType(type);
+		}
+	}
+}
+
+int TileMap::getElementHitsLeft(glm::ivec2 posElement)
+{
+	if (map[posElement.y*mapSize.x + posElement.x] == NULL) return NULL;
+	return map[posElement.y*mapSize.x + posElement.x]->gethits();
+}
 
 // Collision tests for axis aligned bounding boxes.
 // Method collisionMoveDown also corrects Y coordinate if the box is
@@ -239,6 +254,28 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	return false;
 }
 
+bool TileMap::collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
+{
+	int x0, x1, y;
+
+	x0 = pos.x / tileSize;
+	x1 = (pos.x + size.x - 1) / tileSize;
+	y = pos.y / tileSize;
+	for (int x = x0; x <= x1; x++)
+	{
+		if (map[y*mapSize.x + x] != 0)
+		{
+			if (*posY - tileSize * y - size.y <= 8)
+			{
+				*posY = tileSize * y + size.y;
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
 {
 	int x0, x1, y;
@@ -250,7 +287,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	{
 		if (map[y*mapSize.x + x] != 0)
 		{
-			if (*posY - tileSize * y + size.y <= 4)
+			if (*posY - tileSize * y + size.y <= 8)
 			{
 				*posY = tileSize * y - size.y;
 				return true;

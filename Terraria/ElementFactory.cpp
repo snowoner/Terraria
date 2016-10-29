@@ -5,7 +5,7 @@
 ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram)
 {
 	elements.push_back(new Pick());
-	elements.push_back(new Material());
+	elements.push_back(NULL);
 	elements.push_back(new Weapon());
 	elements.push_back(NULL);
 	elements.push_back(NULL);
@@ -19,8 +19,9 @@ void ElementFactory::update(int deltaTime)
 	if (updateTime >= MAXUPDATE_TIME)
 	{
 		updateTime -= MAXUPDATE_TIME;
-		for (glm::ivec2 *position : positionMapMaterials)
+		for (pair<glm::ivec2*,int> material : mapMaterials)
 		{
+			glm::ivec2 *position = material.first;
 			position->y += 2;
 			map->collisionMoveDown(*position, glm::ivec2(32, 32), &(position->y));
 		}
@@ -46,7 +47,6 @@ Element* ElementFactory::addElement(int type)
 	return elements.back();
 }
 
-
 Element* ElementFactory::getElementByIndex(int index)
 {
 	return elements[index];
@@ -70,22 +70,26 @@ int ElementFactory::getIndexElementSelected()
 // TODO: need to collect element passing element
 void ElementFactory::collectElement(int index)
 {
-	positionMapMaterials.erase(positionMapMaterials.begin() + index);
+	int type = mapMaterials.at(index).second;
+	mapMaterials.erase(mapMaterials.begin() + index);
 
 	bool found = false;
 	int firstNull = -1;
 	for (unsigned int i = 0; i < elements.size(); ++i){
 		if (elements.at(i) == NULL && firstNull == -1) firstNull = i;
 		if (dynamic_cast<Material*>(elements[i])) {
-			elements[i]->add(1);
-			found = true;
+			Material *mat = dynamic_cast<Material*>(elements[i]);
+			if (mat->getTileIndex() == type) {
+				elements[i]->add(1);
+				found = true;
+			}
 		}
 	}
 
 	if (!found)
 	{
-		if (firstNull != -1) elements[firstNull] = new Material();
-		else elements.push_back(new Material());
+		if (firstNull != -1) elements[firstNull] = new Material(type);
+		else elements.push_back(new Material(type));
 	}
 }
 
@@ -126,10 +130,10 @@ int ElementFactory::getElementPosition(Element *element)
 void ElementFactory::addMapMaterial(int type, glm::vec2 position)
 {
 	glm::ivec2 *pos = new glm::ivec2(position);
-	positionMapMaterials.push_back(pos);
+	mapMaterials.push_back(pair<glm::ivec2 *,int>(pos,type));
 }
 
-vector<glm::ivec2*> ElementFactory::getMapMaterialsPosition()
+vector<pair<glm::ivec2*, int>> ElementFactory::getMapMaterials()
 {
-	return positionMapMaterials;
+	return mapMaterials;
 }

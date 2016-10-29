@@ -207,6 +207,8 @@ void Scene::initShaders()
 void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera)
 {
 	if (Game::instance().isMousePressed(0)) {
+		// TODO: is it correct ?
+		Game::instance().mouseRelease(0);
 		Element* item = elementManager->getElementSelected();
 		if (dynamic_cast<Weapon*>(item) != 0) {
 			float damage = item->getDamage();
@@ -217,13 +219,22 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 			glm::ivec2 posElementMap = (Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
 			if (map->insideDistance(posPlayer, posElementMap, MAXDISTANCE_BUILD)) {
 				glm::ivec2 posElement = posElementMap / (glm::ivec2(map->getTileSize(), map->getTileSize()));
-				if (dynamic_cast<Pick*>(item) != 0 && map->getElement(posElement) != NULL) {
-					map->buildElement(posElement, NULL);
+
+				// TODO: get hitsleft of the brick and dstroy it if its 0
+				// Have to create an structure to put different tiles
+				if (dynamic_cast<Pick*>(item) != 0 && map->getElementType(posElement) != NULL)
+				{
+					int type = map->getElementType(posElement);
+					map->hitElement(posElement);
+					if (map->getElementHitsLeft(posElement) == 0)
+					{
+						//map->buildElement(posElement, NULL);
+						elementManager->addElementMaterial(type, posElementMap);
+					}
 					map->prepareArrays(SCREEN_VEC, false);
-					elementManager->addElementMaterial(map->getElement(posElement), posElementMap);
 				}
 				else if (dynamic_cast<Material*>(item) != 0) {
-					if (map->getElement(posElement) == NULL) {
+					if (map->getElementType(posElement) == NULL) {
 						map->buildElement(posElement, item->getType());
 						map->prepareArrays(SCREEN_VEC, false);
 
@@ -237,11 +248,12 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 
 void Scene::elementCollecion(const glm::ivec2 &posPlayer)
 {
-	vector<glm::ivec2*> positions = elementManager->getMapMaterialsPosition();
+	vector<pair<glm::ivec2*,int>> materials = elementManager->getMapMaterials();
 	int i, j;
 	i = j = 0;
-	for (glm::ivec2* position : positions){
-		if (map->playerSeenBy(posPlayer, *positions[i], 3)) {
+	for (pair<glm::ivec2*, int> material : materials){
+		glm::ivec2* position = material.first;
+		if (map->playerSeenBy(posPlayer, *position, 3)) {
 			elementManager->collectElement(i - j);
 			j++;
 		}

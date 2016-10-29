@@ -4,7 +4,7 @@ class Material :
 	public Element
 {
 public:
-	Material();
+	Material(int type);
 	int getType();
 };
 

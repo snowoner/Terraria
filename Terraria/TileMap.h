@@ -36,6 +36,7 @@ public:
 
 	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
+	bool collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const;
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const;
 	
 	bool playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance);
@@ -44,7 +45,9 @@ public:
 	bool insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance);
 
 	void buildElement(glm::ivec2 posElement, int type);
-	int getElement(glm::ivec2 posElement);
+	int getElementType(glm::ivec2 posElement);
+	int getElementHitsLeft(glm::ivec2 posElement);
+	void hitElement(glm::ivec2 posElement);
 
 private:
 	bool loadLevel(const string &levelFile);
@@ -59,7 +62,7 @@ private:
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 
-	int *map;
+	Brick **map;
 	int nTiles;
 	vector<float> vertices;
 };

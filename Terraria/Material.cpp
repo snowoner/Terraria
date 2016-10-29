@@ -1,10 +1,10 @@
 #include "Material.h"
 
 
-Material::Material()
+Material::Material(int type)
 {
+	tileIndex = type;
 	quantity = 1;
-	tileIndex = 3;
 	damage = 0;
 	attSpeed = 1.f;
 }

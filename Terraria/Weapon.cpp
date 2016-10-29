@@ -3,7 +3,7 @@
 
 Weapon::Weapon()
 {
-	tileIndex = 2;
+	tileIndex = 6;
 	damage = 60;
 	attSpeed = 1.2f;
 	quantity = 1;

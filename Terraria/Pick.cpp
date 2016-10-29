@@ -3,7 +3,7 @@
 
 Pick::Pick()
 {
-	tileIndex = 1;
+	tileIndex = 5;
 	damage = 5;
 	attSpeed = 1.f;
 	quantity = 1;

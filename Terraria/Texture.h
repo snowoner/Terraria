@@ -1,13 +1,11 @@
 #ifndef _TEXTURE_INCLUDE
 #define _TEXTURE_INCLUDE
 
-
 #include <string>
 #include <GL/glew.h>
-
+#include "Brick.h"
 
 using namespace std;
-
 
 enum PixelFormat {TEXTURE_PIXEL_FORMAT_RGB, TEXTURE_PIXEL_FORMAT_RGBA};
 

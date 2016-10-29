@@ -33,7 +33,7 @@ public:
 
 	void setTileMap(TileMap *tileMap);
 	void addMapMaterial(int type, glm::vec2 position);
-	vector<glm::ivec2*> getMapMaterialsPosition();
+	vector<pair<glm::ivec2*, int>> getMapMaterials();
 private:
 	int getElementPosition(Element *element);
 private:
@@ -42,7 +42,7 @@ private:
 	vector<Element*> elements;
 	int selected;
 
-	vector<glm::ivec2*> positionMapMaterials;
+	vector<pair<glm::ivec2*,int>> mapMaterials;
 	TileMap *map;
 };
 

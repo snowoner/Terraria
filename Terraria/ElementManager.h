@@ -24,7 +24,7 @@ public:
 
 	void addElementMaterial(int type, glm::ivec2 position);
 	void materialsMovements();
-	vector<glm::ivec2*> getMapMaterialsPosition();
+	vector<pair<glm::ivec2*, int>> getMapMaterials();
 
 	void collectElement(int index);
 

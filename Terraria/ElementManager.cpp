@@ -9,6 +9,7 @@
 #define POSINIT glm::vec2(5.f,5.f)
 
 #define ITEM_BLOCKSIZE 56.f
+#define ITEMSVEC glm::vec2(4,2)
 
 enum spriteTypes {
 	SLOTS, SELECTION, ITEMS, MATERIALS
@@ -30,11 +31,11 @@ ElementManager::ElementManager(const glm::ivec2 &minCoords, ShaderProgram &shade
 
 	sprites[ITEMS] = new SpriteArray();
 	sprites[ITEMS]->init(&shaderProgram, minCoords, "images/items.png",
-		glm::vec2(3, 1), glm::ivec2(ITEM_BLOCKSIZE - SLOT_OFFSET * 2, ITEM_BLOCKSIZE - SLOT_OFFSET * 2), glm::ivec2(SLOT_TILESIZEX / MAX_SLOT, 0));
+		ITEMSVEC, glm::ivec2(ITEM_BLOCKSIZE - SLOT_OFFSET * 2, ITEM_BLOCKSIZE - SLOT_OFFSET * 2), glm::ivec2(SLOT_TILESIZEX / MAX_SLOT, 0));
 
 	sprites[MATERIALS] = new SpriteArray();
 	sprites[MATERIALS]->init(&shaderProgram, minCoords, "images/items.png",
-		glm::vec2(3, 1), glm::ivec2(32, 32), glm::ivec2(0, 0));
+		ITEMSVEC, glm::ivec2(32, 32), glm::ivec2(0, 0));
 
 	sprites[SLOTS]->removeTiles();
 	sprites[SLOTS]->addTiles(vector<int>(1, 1), POSINIT);
@@ -79,14 +80,14 @@ void ElementManager::prepareSpritesItems()
 
 void ElementManager::prepareSpritesMaterials() {
 
-	vector<glm::ivec2*> positionMapMaterials = elementFactory->getMapMaterialsPosition();
+	vector<pair<glm::ivec2*,int>> positionMapMaterials = elementFactory->getMapMaterials();
 	if (positionMapMaterials.size() > 0)
 	{
 		sprites[MATERIALS]->removeTiles();
 
 		for (unsigned int i = 0; i < positionMapMaterials.size(); ++i){
-			glm::ivec2* pos = positionMapMaterials[i];
-			sprites[MATERIALS]->addTiles(vector<int>(1, 3), glm::vec2(*pos));
+			glm::ivec2* pos = positionMapMaterials[i].first;
+			sprites[MATERIALS]->addTiles(vector<int>(1, positionMapMaterials[i].second), glm::vec2(*pos));
 		}
 		sprites[MATERIALS]->prepareArrays();
 	}
@@ -114,7 +115,7 @@ void ElementManager::render()
 {
 	for (unsigned int i = 0; i < sizeof(sprites)-1; ++i)
 		sprites[i]->render();
-	if (elementFactory->getMapMaterialsPosition().size() > 0) sprites[MATERIALS]->render();
+	if (elementFactory->getMapMaterials().size() > 0) sprites[MATERIALS]->render();
 	text->render();
 	elementFactory->render();
 }
@@ -179,7 +180,7 @@ void ElementManager::collectElement(int index)
 	prepareSpritesMaterials();
 }
 
-vector<glm::ivec2*> ElementManager::getMapMaterialsPosition()
+vector<pair<glm::ivec2*,int>> ElementManager::getMapMaterials()
 {
-	return elementFactory->getMapMaterialsPosition();
+	return elementFactory->getMapMaterials();
 }
