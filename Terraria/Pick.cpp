@@ -10,5 +10,5 @@ Pick::Pick()
 }
 
 int Pick::getType(){
-	return 1;
+	return PICK;
 }

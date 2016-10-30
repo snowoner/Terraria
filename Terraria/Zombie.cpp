@@ -14,18 +14,18 @@ Sprite* Zombie::getSprite(Texture &spritesheet, ShaderProgram &shaderProgram) {
 
 	sprite->setNumberAnimations(3);
 
-	sprite->setAnimationSpeed(Enemy::MOVE_LEFT, 4);
+	sprite->setAnimation(Enemy::MOVE_LEFT, 4);
 	sprite->addKeyframe(Enemy::MOVE_LEFT, glm::vec2(0.f, 0.f));
 	sprite->addKeyframe(Enemy::MOVE_LEFT, glm::vec2(0.f, 1.f / 3.f));
 	sprite->addKeyframe(Enemy::MOVE_LEFT, glm::vec2(0.f, 2.f / 3.f));
 
-	sprite->setAnimationSpeed(Enemy::MOVE_RIGHT, 4);
+	sprite->setAnimation(Enemy::MOVE_RIGHT, 4);
 	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.5, 0.f));
 	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.5, 1.f / 3.f));
 	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.5, 2.f / 3.f));
 
 	// TODO: Change position of tiles from ATTACK sprites
-	sprite->setAnimationSpeed(Enemy::ATTACK, 2);
+	sprite->setAnimation(Enemy::ATTACK, 2);
 	sprite->addKeyframe(Enemy::ATTACK, glm::vec2(0.5, 0.f));
 	sprite->addKeyframe(Enemy::ATTACK, glm::vec2(0.5, 1.f / 3.f));
 	sprite->addKeyframe(Enemy::ATTACK, glm::vec2(0.5, 2.f / 3.f));

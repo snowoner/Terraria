@@ -27,10 +27,11 @@ public:
 	void free();
 
 	void setNumberAnimations(int nAnimations);
-	void setAnimationSpeed(int animId, int keyframesPerSec);
-	void addKeyframe(int animId, const glm::vec2 &frame);
+	void setAnimation(int animId, int keyframesPerSec, float scaleX = 1.f);
+	void addKeyframe(int animId, const glm::vec2 &frame, const glm::vec2 &rotation = glm::vec2(0.f), const glm::vec2 &posdisp = glm::vec2(0.f));
 	void changeAnimation(int animId);
-	int animation() const;
+	int animation() const; 
+	int keyFrame() const;
 	
 	void setPosition(const glm::vec2 &pos);
 
@@ -45,7 +46,10 @@ private:
 	float timeAnimation;
 	glm::vec2 texCoordDispl;
 	vector<AnimKeyframes> animations;
+	float scaleX;
+	glm::vec2 rotation, posDispl;
 
+	glm::ivec2 size;
 };
 
 

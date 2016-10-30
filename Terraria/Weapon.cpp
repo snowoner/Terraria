@@ -12,5 +12,5 @@ Weapon::Weapon()
 
 int Weapon::getType()
 {
-	return 1;
+	return WEAPON;
 }

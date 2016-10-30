@@ -31,6 +31,7 @@ Sprite::Sprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Te
 	shaderProgram = program;
 	currentAnimation = -1;
 	position = glm::vec2(0.f);
+	size = quadSize;
 }
 
 void Sprite::update(int deltaTime)
@@ -44,12 +45,20 @@ void Sprite::update(int deltaTime)
 			currentKeyframe = (currentKeyframe + 1) % animations[currentAnimation].keyframeDispl.size();
 		}
 		texCoordDispl = animations[currentAnimation].keyframeDispl[currentKeyframe];
+		scaleX = animations[currentAnimation].scaleX;
+		rotation = animations[currentAnimation].keyframeRot[currentKeyframe];
+		posDispl = animations[currentAnimation].keyframePosDisp[currentKeyframe];
 	}
 }
 
 void Sprite::render() const
 {
-	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, 0.f));
+	glm::mat4 modelview = glm::translate(glm::mat4(1.f), glm::vec3(position.x + posDispl.x, position.y + posDispl.y, 0.f));
+	modelview = glm::translate(modelview, glm::vec3(size.x / 2.f, size.x / 2.f, 0.f));
+	modelview = glm::rotate(modelview, rotation.x, glm::vec3(0.0f, 0.0f, 1.0f));
+	modelview = glm::scale(modelview, glm::vec3(scaleX, 1.f, 1.f));
+	modelview = glm::translate(modelview, glm::vec3(-size.x / 2.f, -size.x / 2.f, 0.f));
+	
 	shaderProgram->setUniformMatrix4f("modelview", modelview);
 	shaderProgram->setUniform2f("texCoordDispl", texCoordDispl.x, texCoordDispl.y);
 	glEnable(GL_TEXTURE_2D);
@@ -72,16 +81,21 @@ void Sprite::setNumberAnimations(int nAnimations)
 	animations.resize(nAnimations);
 }
 
-void Sprite::setAnimationSpeed(int animId, int keyframesPerSec)
+void Sprite::setAnimation(int animId, int keyframesPerSec, float scaleX)
 {
-	if(animId < int(animations.size()))
+	if (animId < int(animations.size())) {
 		animations[animId].millisecsPerKeyframe = 1000.f / keyframesPerSec;
+		animations[animId].scaleX = scaleX;
+	}
 }
 
-void Sprite::addKeyframe(int animId, const glm::vec2 &displacement)
+void Sprite::addKeyframe(int animId, const glm::vec2 &displacement, const glm::vec2 &rotation, const glm::vec2 &posdisp)
 {
-	if(animId < int(animations.size()))
+	if (animId < int(animations.size())) {
 		animations[animId].keyframeDispl.push_back(displacement);
+		animations[animId].keyframeRot.push_back(rotation);
+		animations[animId].keyframePosDisp.push_back(posdisp);
+	}
 }
 
 void Sprite::changeAnimation(int animId)
@@ -98,6 +112,11 @@ void Sprite::changeAnimation(int animId)
 int Sprite::animation() const
 {
 	return currentAnimation;
+}
+
+int Sprite::keyFrame() const
+{
+	return currentKeyframe;
 }
 
 void Sprite::setPosition(const glm::vec2 &pos)

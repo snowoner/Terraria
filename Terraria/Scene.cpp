@@ -68,9 +68,13 @@ void Scene::update(int deltaTime)
 					enemyManager->setTileMap(map);
 					enemyManager->addEnemy();
 
+
 					elementManager = new ElementManager(SCREEN_VEC, texProgram);
 					elementManager->setTileMap(map);
-					
+
+
+					playerManager->setItem(elementManager->getElementSelected());
+
 					firstTime = false;
 				}
 				state = ST_GAME;
@@ -105,6 +109,7 @@ void Scene::update(int deltaTime)
 
 			playerActions(posPlayer, posCamera);
 			elementCollecion(posPlayer);
+			elementSelection();
 
 			enemyManager->update(deltaTime, posPlayer);
 			elementManager->update(deltaTime);
@@ -206,49 +211,52 @@ void Scene::initShaders()
 
 void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera)
 {
-	if (Game::instance().isMousePressed(0)) {
-		// TODO: is it correct ?
-		Game::instance().mouseRelease(0);
-		Element* item = elementManager->getElementSelected();
-		if (dynamic_cast<Weapon*>(item) != 0) {
-			float damage = item->getDamage();
-			// TOOD: Set damage to all enemies within a size of weapon (distance from player)
-			//enemyManager->setDamage(posPlayer, damage, player->getDirection());
-		}
-		else {
-			glm::ivec2 posElementMap = (Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
-			if (map->insideDistance(posPlayer, posElementMap, MAXDISTANCE_BUILD)) {
-				glm::ivec2 posElement = posElementMap / (glm::ivec2(map->getTileSize(), map->getTileSize()));
+	if (playerManager->getState() >= PlayerAnims::CHOP_RIGHT && playerManager->getState() < LASTANIM) {
+		int delay = playerManager->getActualDelay();
+		if (delay == ACTION_DELAY && pressed != NULL){
+			if (dynamic_cast<Weapon*>(pressed->second) != 0) {
+				float damage = pressed->second->getDamage();
+				// TOOD: Set damage to all enemies within a size of weapon (distance from player)
+				//enemyManager->setDamage(posPlayer, damage, player->getDirection());
+			}
+			else {
+				if (map->insideDistance(posPlayer, *pressed->first, MAXDISTANCE_BUILD)) {
+					glm::ivec2 posElement = *pressed->first / (glm::ivec2(map->getTileSize(), map->getTileSize()));
 
-				// TODO: get hitsleft of the brick and dstroy it if its 0
-				// Have to create an structure to put different tiles
-				if (dynamic_cast<Pick*>(item) != 0 && map->getElementType(posElement) != NULL)
-				{
-					int type = map->getElementType(posElement);
-					map->hitElement(posElement);
-					if (map->getElementHitsLeft(posElement) == 0)
+					// TODO: get hitsleft of the brick and dstroy it if its 0
+					// Have to create an structure to put different tiles
+					if (dynamic_cast<Pick*>(pressed->second) != 0 && map->getElementType(posElement) != NULL)
 					{
-						//map->buildElement(posElement, NULL);
-						elementManager->addElementMaterial(type, posElementMap);
-					}
-					map->prepareArrays(SCREEN_VEC, false);
-				}
-				else if (dynamic_cast<Material*>(item) != 0) {
-					if (map->getElementType(posElement) == NULL) {
-						map->buildElement(posElement, item->getType());
+						int type = map->getElementType(posElement);
+						map->hitElement(posElement);
+						if (map->getElementHitsLeft(posElement) == 0)
+						{
+							//map->buildElement(posElement, NULL);
+							elementManager->addElementMaterial(type, *pressed->first);
+						}
 						map->prepareArrays(SCREEN_VEC, false);
+					}
+					else if (dynamic_cast<Material*>(pressed->second) != 0) {
+						if (map->getElementType(posElement) == NULL) {
+							map->buildElement(posElement, pressed->second->getType());
+							map->prepareArrays(SCREEN_VEC, false);
 
-						elementManager->consumeElement(item, 1);
+							elementManager->consumeElement(pressed->second, 1);
+						}
 					}
 				}
 			}
+			pressed = NULL;
 		}
+	}
+	else if (Game::instance().isMousePressed(0)) {
+		pressed = new pair<glm::ivec2*, Element*>(new glm::ivec2(Game::instance().getMousePosition() + posCamera - SCREEN_VEC), elementManager->getElementSelected());
 	}
 }
 
 void Scene::elementCollecion(const glm::ivec2 &posPlayer)
 {
-	vector<pair<glm::ivec2*,int>> materials = elementManager->getMapMaterials();
+	vector<pair<glm::ivec2*, int>> materials = elementManager->getMapMaterials();
 	int i, j;
 	i = j = 0;
 	for (pair<glm::ivec2*, int> material : materials){
@@ -258,5 +266,20 @@ void Scene::elementCollecion(const glm::ivec2 &posPlayer)
 			j++;
 		}
 		i++;
+	}
+}
+
+void Scene::elementSelection()
+{
+	bool found = false;
+	int keyPressed = 1;
+	while (keyPressed <= MAX_ITEMS_SHOWN && !found)
+	{
+		if (Game::instance().getKey(keyPressed + '0')) found = true;
+		else keyPressed++;
+	}
+	if (found) {
+		elementManager->setElementSelected(keyPressed - 1);
+		playerManager->setItem(elementManager->getElementSelected());
 	}
 }

@@ -36,7 +36,7 @@ void Menu::init(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram) {
 	spritesheet.loadFromFile("images/arrows.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(ARROW_TILESIZE, MENU_TILESIZE), glm::vec2(1, 0.25), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(1);
-	sprite->setAnimationSpeed(0, 8);
+	sprite->setAnimation(0, 8);
 	sprite->addKeyframe(0, glm::vec2(0.f, 0.f));
 	sprite->addKeyframe(0, glm::vec2(0.f, 0.25f));
 	sprite->addKeyframe(0, glm::vec2(0.f, 0.5f));

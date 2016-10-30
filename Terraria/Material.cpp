@@ -11,5 +11,5 @@ Material::Material(int type)
 
 int Material::getType()
 {
-	return 1;
+	return MATERIAL;
 }

@@ -16,7 +16,11 @@ using namespace std;
 struct AnimKeyframes
 {
 	float millisecsPerKeyframe;
+	float scaleX;
 	vector<glm::vec2> keyframeDispl;
+	vector<glm::vec2> keyframeRot;
+	vector<glm::vec2> keyframePosDisp;
+
 };
 
 

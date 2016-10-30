@@ -14,7 +14,9 @@
 
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, 
+	CHOP_RIGHT, CHOP_LEFT, ATT_RIGHT, ATT_LEFT,
+	LASTANIM
 };
 
 class Player
@@ -22,7 +24,7 @@ class Player
 
 public:
 	void init();
-	void update(int deltaTime);
+	void update(int deltaTime, int delay);
 	void render();
 	
 	void setTileMap(TileMap *tileMap);
@@ -32,9 +34,11 @@ public:
 	glm::vec2 getPosition() const { return posPlayer; }
 	int getState() const { return state; }
 	int getDirection() const { return direction; }
+	int getItem() const { return (item!=NULL) ? item->getType() : -1; }
 	float getLife() const { return life; }
 
 	void receiveDamage(float damage);
+	void setItem(Element *item);
 private:
 	bool bJumping;
 	glm::ivec2 posPlayer;
@@ -42,6 +46,8 @@ private:
 	int state, direction;
 	TileMap *map;
 	float life;
+
+	Element *item;
 };
 
 

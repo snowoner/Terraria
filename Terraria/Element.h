@@ -2,6 +2,11 @@
 #define _ELEMENT_INCLUDE
 
 #include <vector>
+
+enum elementTypes{
+	PICK, WEAPON, MATERIAL
+};
+
 using namespace std;
 
 class Element

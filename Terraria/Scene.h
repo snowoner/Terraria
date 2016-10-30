@@ -31,6 +31,7 @@ private:
 	void initShaders();
 	void playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera);
 	void elementCollecion(const glm::ivec2 &posPlayer);
+	void Scene::elementSelection();
 private:
 	enum State { ST_MENU, ST_GAME, ST_DEAD, ST_CREDITS };
 	State state;
@@ -51,6 +52,8 @@ private:
 
 	EnemyManager *enemyManager;
 	ElementManager *elementManager;
+
+	pair<glm::ivec2*, Element*> *pressed;
 };
 
 
