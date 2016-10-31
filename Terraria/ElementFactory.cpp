@@ -59,7 +59,7 @@ void ElementFactory::setElementSelected(int selected)
 
 Element* ElementFactory::getElementSelected()
 {
-	return elements.at(selected);
+	return (elements.at(selected) != NULL) ? elements.at(selected) : NULL;
 }
 
 int ElementFactory::getIndexElementSelected()

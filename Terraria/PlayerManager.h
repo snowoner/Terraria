@@ -12,21 +12,23 @@ public:
 	void update(int deltaTime);
 	void render();
 
-	void setTileMap(TileMap *tileMap);
-	void setPosition(const glm::vec2 &pos);
 	int getState() const { return player->getState(); }
 	glm::vec2 getPosition() const { return player->getPosition(); }
 	int getDirection() const { return player->getDirection(); }
 	float getLife() const { return player->getLife(); }
 
+	void setTileMap(TileMap *tileMap);
+	void setPosition(const glm::vec2 &pos);
 	void setState(int state);
-	void receiveDamage(float damage);
-	void setItem(Element *item);
 
+	void receiveDamage(float damage);
+
+	void setItem(Element *item);
 	void setPositionPressed(glm::ivec2 position);
 	int PlayerManager::getActualDelay();
 private:
 	void setSpritesPositions(const glm::vec2 &pos);
+	void addAnimations();
 
 private:
 	glm::ivec2 tileMapDispl;

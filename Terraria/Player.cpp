@@ -21,7 +21,7 @@ void Player::init()
 
 void Player::update(int deltaTime, int delay)
 {
-	int states[] = {CHOP_RIGHT, CHOP_LEFT};
+	int states[] = { HAND_RIGHT, HAND_LEFT };
 	if (delay == ACTION_DELAY || find(std::begin(states), end(states), state) == end(states))
 	{
 		if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
@@ -57,15 +57,15 @@ void Player::update(int deltaTime, int delay)
 		{
 			if (Game::instance().isMousePressed(0)) {
 				Game::instance().mouseRelease(0);
-				if (item->getType() == 0)
-				state = (getDirection() == RIGHT) ? CHOP_RIGHT : CHOP_LEFT;
+				if (item != NULL) 
+					state = (getDirection() == RIGHT) ? HAND_RIGHT : HAND_LEFT;
 			}
 			else {
 				if (state == MOVE_LEFT)
 					state = STAND_LEFT;
 				else if (state == MOVE_RIGHT)
 					state = STAND_RIGHT;
-				else if (delay == ACTION_DELAY) 
+				else if (delay == ACTION_DELAY)
 					state = (getDirection() == LEFT) ? STAND_LEFT : STAND_RIGHT;
 			}
 

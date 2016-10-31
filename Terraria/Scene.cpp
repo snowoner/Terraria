@@ -211,7 +211,7 @@ void Scene::initShaders()
 
 void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera)
 {
-	if (playerManager->getState() >= PlayerAnims::CHOP_RIGHT && playerManager->getState() < LASTANIM) {
+	if (playerManager->getState() >= PlayerAnims::HAND_RIGHT && playerManager->getState() < LASTANIM) {
 		int delay = playerManager->getActualDelay();
 		if (delay == ACTION_DELAY && pressed != NULL){
 			if (dynamic_cast<Weapon*>(pressed->second) != 0) {
@@ -242,6 +242,8 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 							map->prepareArrays(SCREEN_VEC, false);
 
 							elementManager->consumeElement(pressed->second, 1);
+
+							playerManager->setItem(elementManager->getElementSelected());
 						}
 					}
 				}
