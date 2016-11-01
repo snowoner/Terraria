@@ -1,6 +1,8 @@
 #include "ElementFactory.h"
+#include <iostream>
 
 #define MAXUPDATE_TIME 1000/16
+
 
 ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram)
 {
@@ -13,13 +15,32 @@ ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shade
 	updateTime = 0;
 }
 
+void ElementFactory::init()
+{
+	vector<craftMaterial> craftWeapon = vector<craftMaterial>(
+	{
+		{ 1, 1 }
+	});
+	vector<craftMaterial> craftPick = vector<craftMaterial>(
+	{
+		{ 1, 1 }
+	});
+	vector<craftMaterial> craftArmor = vector<craftMaterial>(
+	{
+		{ 2, 3 }
+	});
+	craftintMaterials.push_back(pair<elementTypes, vector<craftMaterial>>(WEAPON, craftWeapon));
+	craftintMaterials.push_back(pair<elementTypes, vector<craftMaterial>>(PICK, craftPick));
+	craftintMaterials.push_back(pair<elementTypes, vector<craftMaterial>>(ARMOR, craftArmor));
+}
+
 void ElementFactory::update(int deltaTime)
 {
 	updateTime += deltaTime;
 	if (updateTime >= MAXUPDATE_TIME)
 	{
 		updateTime -= MAXUPDATE_TIME;
-		for (pair<glm::ivec2*,int> material : mapMaterials)
+		for (pair<glm::ivec2*, int> material : mapMaterials)
 		{
 			glm::ivec2 *position = material.first;
 			position->y += 2;
@@ -40,11 +61,34 @@ void ElementFactory::setTileMap(TileMap *tileMap)
 	map = tileMap;
 }
 
-// TODO: implement add element by type
-Element* ElementFactory::addElement(int type)
+void ElementFactory::addElement(int type)
 {
-	//elements.push_back(new Element());
-	return elements.back();
+	Element *el;
+	switch (type)
+	{
+	case WEAPON:
+		el = new Weapon();
+		break;
+	case PICK:
+		el = new Pick();
+		break;
+	case ARMOR:
+		el = new Armor();
+		break;
+	default:
+		break;
+	}
+
+	bool found = false;
+	unsigned int i = 0;
+	while (i < elements.size() && found == false)
+	{
+		if (elements.at(i) == NULL)found = true;
+		else i++;
+	}
+
+	if (found) elements[i] = el;
+	else elements.push_back(el);
 }
 
 Element* ElementFactory::getElementByIndex(int index)
@@ -110,15 +154,60 @@ void ElementFactory::removeElement(Element *element)
 	}
 }
 
-bool ElementFactory::craftElement(int type)
+void ElementFactory::craftElement(int index)
 {
-	vector<Element*> elementsNeed = elements[0]->getCraftingMaterials();
-
-	for (Element* e : elementsNeed){
-		if (std::find(elements.begin(), elements.end(), e) == elements.end()) return false;
-		// Check if has material to do it?? or put materials to craft and craft materials searching which material to do?
+	pair < int, vector<ElementFactory::craftMaterial >> itemToCraft = craftintMaterials.at(index);
+	vector<int> indexMats;
+	for (unsigned i = 0; i < elements.size(); ++i){
+		if (elements.at(i) != NULL){
+			if (elements.at(i)->getType() == MATERIAL)
+				indexMats.push_back(i);
+		}
 	}
-	return true;
+	for (unsigned int i = 0; i < itemToCraft.second.size(); ++i){
+		craftMaterial material = itemToCraft.second.at(i);
+		for (int k : indexMats)
+		if (elements.at(k)->getTileIndex() == material.type)
+			consumeElement(elements.at(k), material.quantity);
+	}
+	addElement(itemToCraft.first);
+}
+
+vector<pair<elementTypes, vector<ElementFactory::craftMaterial>>> ElementFactory::getCraftingMaterials()
+{
+	return craftintMaterials;
+}
+
+vector<pair<elementTypes, vector<ElementFactory::craftMaterial>>> ElementFactory::listCraftItems()
+{
+	itemsIndexToCraft.clear();
+	vector<int> indexMats;
+	vector < pair < elementTypes, vector<ElementFactory::craftMaterial >> > materialsCanCraft;
+	for (unsigned i = 0; i < elements.size(); ++i){
+		if (elements.at(i) != NULL){
+			if (elements.at(i)->getType() == MATERIAL)
+				indexMats.push_back(i);
+		}
+	}
+	for (pair<elementTypes, vector<craftMaterial>> elementToCraft : craftintMaterials){
+		bool found = true;
+		unsigned int j = 0;
+		while (j < elementToCraft.second.size() && found == true){
+			craftMaterial material = elementToCraft.second.at(j);
+			found = false;
+			for (int k : indexMats){
+				if (elements.at(k)->getTileIndex() == material.type)
+					found = material.quantity <= elements.at(k)->getQuantity();
+			}
+			j++;
+		}
+		if (found) {
+			materialsCanCraft.push_back(elementToCraft);
+			itemsIndexToCraft.push_back(--j);
+		}
+	}
+
+	return materialsCanCraft;
 }
 
 int ElementFactory::getElementPosition(Element *element)
@@ -130,7 +219,7 @@ int ElementFactory::getElementPosition(Element *element)
 void ElementFactory::addMapMaterial(int type, glm::vec2 position)
 {
 	glm::ivec2 *pos = new glm::ivec2(position);
-	mapMaterials.push_back(pair<glm::ivec2 *,int>(pos,type));
+	mapMaterials.push_back(pair<glm::ivec2 *, int>(pos, type));
 }
 
 vector<pair<glm::ivec2*, int>> ElementFactory::getMapMaterials()

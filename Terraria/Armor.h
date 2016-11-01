@@ -1,9 +1,9 @@
 #include "Element.h"
-class Pick :
+class Armor :
 	public Element
 {
 public:
-	Pick();
+	Armor();
 	int getType();
 };
 

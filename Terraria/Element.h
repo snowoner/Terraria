@@ -4,7 +4,7 @@
 #include <vector>
 
 enum elementTypes{
-	PICK, WEAPON, MATERIAL
+	PICK, WEAPON, MATERIAL, ARMOR
 };
 
 using namespace std;
@@ -16,9 +16,7 @@ public:
 	~Element();
 
 	void render();
-
-	vector<Element*> getCraftingMaterials();
-
+	
 	float getDamage() const { return damage; }
 	int getTileIndex() const { return tileIndex; }
 	int getQuantity() const { return quantity; };
@@ -30,7 +28,6 @@ public:
 	virtual int getType() = 0;
 protected:
 	float damage, attSpeed;
-	vector<Element*> craftingMaterials;
 	int tileIndex, quantity;
 };
 

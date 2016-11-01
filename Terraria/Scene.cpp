@@ -211,7 +211,7 @@ void Scene::initShaders()
 
 void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera)
 {
-	if (playerManager->getState() >= PlayerAnims::HAND_RIGHT && playerManager->getState() < LASTANIM) {
+	if (pressed != NULL && playerManager->getState() >= PlayerAnims::HAND_RIGHT && playerManager->getState() < LASTANIM) {
 		int delay = playerManager->getActualDelay();
 		if (delay == ACTION_DELAY && pressed != NULL){
 			if (dynamic_cast<Weapon*>(pressed->second) != 0) {
@@ -252,7 +252,10 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 		}
 	}
 	else if (Game::instance().isMousePressed(0)) {
-		pressed = new pair<glm::ivec2*, Element*>(new glm::ivec2(Game::instance().getMousePosition() + posCamera - SCREEN_VEC), elementManager->getElementSelected());
+		glm::ivec2 *pos = new glm::ivec2(Game::instance().getMousePosition() + posCamera - SCREEN_VEC); 
+		int craftElementSelected = elementManager->getCraftingElement(Game::instance().getMousePosition());
+		if (craftElementSelected != -1) elementManager->craftElement(craftElementSelected);
+		else pressed = new pair<glm::ivec2*, Element*>(pos, elementManager->getElementSelected());
 	}
 }
 

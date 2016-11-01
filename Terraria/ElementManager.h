@@ -17,14 +17,14 @@ public:
 	void setElementSelected(int selected);
 	Element* getElementSelected();
 
-	Element *addElement(int type);
 	void consumeElement(Element *element, int quantity);
 	void removeElement(Element *element);
-	bool craftElement(int type);
+	void craftElement(int index);
 
 	void addElementMaterial(int type, glm::ivec2 position);
 	void materialsMovements();
 	vector<pair<glm::ivec2*, int>> getMapMaterials();
+	int ElementManager::getCraftingElement(const glm::vec2 position);
 
 	void collectElement(int index);
 
@@ -32,6 +32,8 @@ public:
 private:
 	void prepareSpritesItems();
 	void prepareSpritesMaterials();
+
+	int getTileIndex(elementTypes type);
 private:
 	SpriteArray **sprites;
 	ElementFactory *elementFactory;
