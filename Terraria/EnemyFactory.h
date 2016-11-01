@@ -14,7 +14,7 @@ public:
 	EnemyFactory(const glm::vec2 &tileMapDispl);
 	~EnemyFactory();
 
-	void update(int deltaTime, const glm::vec2 &pos);
+	void update(int deltaTime, PlayerManager *playerManager);
 	void render();
 	
 	Enemy *createEnemy(int type, Sprite &sprite);

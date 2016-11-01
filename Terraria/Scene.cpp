@@ -68,10 +68,8 @@ void Scene::update(int deltaTime)
 					enemyManager->setTileMap(map);
 					enemyManager->addEnemy();
 
-
 					elementManager = new ElementManager(SCREEN_VEC, texProgram);
 					elementManager->setTileMap(map);
-
 
 					playerManager->setItem(elementManager->getElementSelected());
 
@@ -111,7 +109,7 @@ void Scene::update(int deltaTime)
 			elementCollecion(posPlayer);
 			elementSelection();
 
-			enemyManager->update(deltaTime, posPlayer);
+			enemyManager->update(deltaTime, playerManager);
 			elementManager->update(deltaTime);
 			playerManager->update(deltaTime);
 
@@ -217,7 +215,7 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 			if (dynamic_cast<Weapon*>(pressed->second) != 0) {
 				float damage = pressed->second->getDamage();
 				// TOOD: Set damage to all enemies within a size of weapon (distance from player)
-				//enemyManager->setDamage(posPlayer, damage, player->getDirection());
+				enemyManager->setDamage(posPlayer, damage, playerManager->getDirection());
 			}
 			else {
 				if (map->insideDistance(posPlayer, *pressed->first, MAXDISTANCE_BUILD)) {

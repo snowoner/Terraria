@@ -19,7 +19,7 @@ public:
 
 	EnemyManager(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
 	
-	void update(int deltaTime, const glm::vec2 &pos);
+	void update(int deltaTime, PlayerManager *playerManager);
 	void render();
 	
 	void addEnemy();

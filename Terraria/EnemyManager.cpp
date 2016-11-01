@@ -21,8 +21,8 @@ void EnemyManager::setTileMap(TileMap *tileMap)
 	enemyFactory->setTileMap(tileMap);
 }
 
-void EnemyManager::update(int deltaTime, const glm::vec2 &pos) {
-	enemyFactory->update(deltaTime,pos);
+void EnemyManager::update(int deltaTime,PlayerManager *playerManager) {
+	enemyFactory->update(deltaTime, playerManager);
 }
 
 void EnemyManager::render()

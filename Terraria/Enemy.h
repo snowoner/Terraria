@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Sprite.h"
 #include "TileMap.h"
+#include "PlayerManager.h"
 
 #define MONSERTYPES 1
 
@@ -16,30 +17,35 @@ class Enemy
 {
 protected:
 	Enemy(const glm::ivec2 &tileMapPos);
-	~Enemy();
 public:
 	void init(Sprite &sprite, TileMap &tileMap);
-	void update(int deltaTime, const glm::vec2 &pos, bool playerSeen, bool playerCollision);
+	void update(int deltaTime, PlayerManager *playerManager, bool playerSeen, bool playerCollision);
 	void render();
 
 	void setPosition(const glm::vec2 &pos);
 	glm::vec2 getPosition() const { return position; }
 	//	float getDamageDeal() const { return (attackDelay == 0) ? monster->damage : 0; }
-	
-	void setDamage(int damage);
 
-	const enum STATE { MOVE_LEFT, MOVE_RIGHT, ATTACK, DEAD };
+	int getState();
+	void setDamage(int damage); 
+	bool isDead();
+
+	const enum STATE { MOVE_LEFT, MOVE_RIGHT, ATTACK_LEFT, ATTACK_RIGHT, DEAD, JUMP };
 
 protected:
 	float health, speed, attSpeed;
 	int attackDelay;
-	glm::vec2 position;
+	glm::ivec2 position;
 
 private:
 	int getDecision(const glm::vec2 &pos);
-	
+
 private:
 	float monsterTime;
+	bool bJumping;
+	int jumpAngle, startY;
+	float damage;
+	int deadDelay;
 
 	Sprite *sprite;
 	TileMap *map;

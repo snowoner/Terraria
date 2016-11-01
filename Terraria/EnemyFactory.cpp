@@ -24,15 +24,24 @@ EnemyFactory::~EnemyFactory()
 		delete &enemy;
 }
 
-void EnemyFactory::update(int deltaTime, const glm::vec2 &pos)
+void EnemyFactory::update(int deltaTime, PlayerManager *playerManager)
 {
 	// TODO: Only update enemies can see in the screen
-	for (Enemy* enemy : enemies)
+	glm::vec2 posPlayer = playerManager->getPosition();
+	for (unsigned int i = 0; i < enemies.size(); ++i)
 	{
+		Enemy* enemy = enemies.at(i);
 		glm::vec2 posEnemy = enemy->getPosition();
-		bool collision = map->playerCollisionBy(pos, posEnemy);
+		bool collision = map->playerCollisionBy(posPlayer, posEnemy);
 		// TODO: 32 -> map->size
-		enemy->update(deltaTime, pos, collision ? true : map->playerSeenBy(pos, posEnemy, 32), collision);
+		enemy->update(deltaTime, playerManager, collision ? true : map->playerSeenBy(posPlayer, posEnemy, 32), collision);
+		if (enemy->getState() == Enemy::DEAD && enemy->isDead())
+		{
+			delete enemies.at(i);
+			enemies.erase(enemies.begin() + i);
+			i--;
+		}
+
 	}
 }
 

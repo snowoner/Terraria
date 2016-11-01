@@ -72,6 +72,7 @@ void PlayerManager::setItem(Element *item)
 
 void PlayerManager::receiveDamage(float damage)
 {
+
 	player->receiveDamage(damage);
 }
 

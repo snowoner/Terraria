@@ -10,7 +10,6 @@
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
 
-
 void Player::init()
 {
 	life = 100.f;

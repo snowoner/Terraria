@@ -12,23 +12,29 @@ Zombie::Zombie(const glm::vec2 &tileMapPos) : Enemy(tileMapPos)
 Sprite* Zombie::getSprite(Texture &spritesheet, ShaderProgram &shaderProgram) {
 	Sprite *sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5f, 1.f / 3.f), &spritesheet, &shaderProgram);
 
-	sprite->setNumberAnimations(3);
+	sprite->setNumberAnimations(5);
 
 	sprite->setAnimation(Enemy::MOVE_LEFT, 4);
 	sprite->addKeyframe(Enemy::MOVE_LEFT, glm::vec2(0.f, 0.f));
 	sprite->addKeyframe(Enemy::MOVE_LEFT, glm::vec2(0.f, 1.f / 3.f));
 	sprite->addKeyframe(Enemy::MOVE_LEFT, glm::vec2(0.f, 2.f / 3.f));
 
-	sprite->setAnimation(Enemy::MOVE_RIGHT, 4);
-	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.5, 0.f));
-	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.5, 1.f / 3.f));
-	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.5, 2.f / 3.f));
+	sprite->setAnimation(Enemy::MOVE_RIGHT, 4, -1.f);
+	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.f, 0.f));
+	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.f, 1.f / 3.f));
+	sprite->addKeyframe(Enemy::MOVE_RIGHT, glm::vec2(0.f, 2.f / 3.f));
 
-	// TODO: Change position of tiles from ATTACK sprites
-	sprite->setAnimation(Enemy::ATTACK, 2);
-	sprite->addKeyframe(Enemy::ATTACK, glm::vec2(0.5, 0.f));
-	sprite->addKeyframe(Enemy::ATTACK, glm::vec2(0.5, 1.f / 3.f));
-	sprite->addKeyframe(Enemy::ATTACK, glm::vec2(0.5, 2.f / 3.f));
+	sprite->setAnimation(Enemy::ATTACK_LEFT, 4);
+	sprite->addKeyframe(Enemy::ATTACK_LEFT, glm::vec2(0.f, 0.f));
+
+	sprite->setAnimation(Enemy::ATTACK_RIGHT, 4, -1.f);
+	sprite->addKeyframe(Enemy::ATTACK_RIGHT, glm::vec2(0.f, 0.f));
+
+	sprite->setAnimation(Enemy::DEAD,8);
+	sprite->addKeyframe(Enemy::DEAD, glm::vec2(0.0, 0.f));
+	sprite->addKeyframe(Enemy::DEAD, glm::vec2(0.5f, 0.f));
+	sprite->addKeyframe(Enemy::DEAD, glm::vec2(0.0, 0.f));
+	sprite->addKeyframe(Enemy::DEAD, glm::vec2(0.5f,0.f));
 
 	sprite->changeAnimation(0);
 
