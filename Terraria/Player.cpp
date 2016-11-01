@@ -12,7 +12,7 @@
 
 void Player::init()
 {
-	life = 100.f;
+	health = 100.f;
 	bJumping = false;
 	direction = LEFT;
 	state = STAND_LEFT;
@@ -105,9 +105,6 @@ void Player::update(int deltaTime, int delay)
 	}
 }
 
-void Player::render()
-{
-}
 
 void Player::setTileMap(TileMap *tileMap)
 {
@@ -125,7 +122,7 @@ void Player::setDirection(int dir)
 }
 
 void Player::receiveDamage(float damage) {
-	life -= damage;
+	health -= damage;
 }
 
 void Player::setItem(Element *item)

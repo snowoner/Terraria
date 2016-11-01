@@ -7,6 +7,7 @@ Zombie::Zombie(const glm::vec2 &tileMapPos) : Enemy(tileMapPos)
 	health = 100;
 	speed = 4;
 	attSpeed = 2;
+	damage = 5.f;
 }
 
 Sprite* Zombie::getSprite(Texture &spritesheet, ShaderProgram &shaderProgram) {

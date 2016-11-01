@@ -27,7 +27,7 @@ public:
 	//	float getDamageDeal() const { return (attackDelay == 0) ? monster->damage : 0; }
 
 	int getState();
-	void setDamage(int damage); 
+	void setDamage(float damage); 
 	bool isDead();
 
 	const enum STATE { MOVE_LEFT, MOVE_RIGHT, ATTACK_LEFT, ATTACK_RIGHT, DEAD, JUMP };
@@ -36,7 +36,7 @@ protected:
 	float health, speed, attSpeed;
 	int attackDelay;
 	glm::ivec2 position;
-
+	float damage;
 private:
 	int getDecision(const glm::vec2 &pos);
 
@@ -44,7 +44,7 @@ private:
 	float monsterTime;
 	bool bJumping;
 	int jumpAngle, startY;
-	float damage;
+	
 	int deadDelay;
 
 	Sprite *sprite;

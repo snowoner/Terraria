@@ -30,9 +30,8 @@ void Scene::init()
 
 	map = TileMap::createTileMap("levels/Menu.txt", SCREEN_VEC, texProgram);
 
-	posTileMap = glm::vec2(SCREEN_X, SCREEN_Y);
 	menu = new Menu();
-	menu->init(posTileMap, texProgram);
+	menu->init(SCREEN_VEC, texProgram);
 
 	camera = new Camera();
 
@@ -60,7 +59,7 @@ void Scene::update(int deltaTime)
 					glm::vec2 posPlayer = glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize());
 					playerManager = new PlayerManager();
 					playerManager->init(SCREEN_VEC, texProgram);
-					playerManager->setPosition(posPlayer);
+					playerManager->setPlayerPosition(posPlayer);
 					playerManager->setTileMap(map);
 					camera->update(deltaTime, posPlayer, glm::vec2(1, 1));
 
@@ -111,9 +110,9 @@ void Scene::update(int deltaTime)
 
 			enemyManager->update(deltaTime, playerManager);
 			elementManager->update(deltaTime);
-			playerManager->update(deltaTime);
-
 			elementManager->setPosition(posCamera);
+			playerManager->update(deltaTime, posCamera);
+			playerManager->setPosition(camera->getPosition());
 
 
 			/*
@@ -250,7 +249,7 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 		}
 	}
 	else if (Game::instance().isMousePressed(0)) {
-		glm::ivec2 *pos = new glm::ivec2(Game::instance().getMousePosition() + posCamera - SCREEN_VEC); 
+		glm::ivec2 *pos = new glm::ivec2(Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
 		int craftElementSelected = elementManager->getCraftingElement(Game::instance().getMousePosition());
 		if (craftElementSelected != -1) elementManager->craftElement(craftElementSelected);
 		else pressed = new pair<glm::ivec2*, Element*>(pos, elementManager->getElementSelected());

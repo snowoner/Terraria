@@ -3,20 +3,20 @@
 Text::textType textTypes[2] =
 {
 	{ 32, 32, int('A'), 9, 4, "images/fontMenu.png" },
-	{ 8, 8, int('0'), 5, 2, "images/numbers.png" }
+	{32,32, int('0'), 5, 2, "images/numbers.png" }
 };
 
-void Text::init(ShaderProgram &shaderProgram, const glm::vec2 &minCoords, int type)
+void Text::init(ShaderProgram *shaderProgram, const glm::vec2 &minCoords, int type)
 {
-	text = new SpriteArray();
-	text->init(&shaderProgram, minCoords, textTypes[type].font,
+	textSprite = new SpriteArray();
+	textSprite->init(*(&shaderProgram), minCoords, textTypes[type].font,
 		glm::vec2(textTypes[type].tileLengthX, textTypes[type].tileLengthY),
 		glm::ivec2(textTypes[type].blockSize, textTypes[type].blockSize), glm::ivec2(textTypes[type].tileSize, 0), textTypes[type].offset);
 }
 
 void Text::render()
 {
-	text->render();
+	textSprite->render();
 }
 
 void Text::addText(string text, glm::vec2 &position)
@@ -27,20 +27,20 @@ void Text::addText(string text, glm::vec2 &position)
 		tiles[i] = int(c) + 1;
 		i++;
 	}
-	this->text->addTiles(tiles, position);
+	textSprite->addTiles(tiles, position);
 }
 
 void Text::removeTiles()
 {
-	text->removeTiles();
+	textSprite->removeTiles();
 }
 
 void Text::prepareText()
 {
-	text->prepareArrays();
+	textSprite->prepareArrays();
 }
 
 void Text::setPosition(const glm::vec2 &minCoord)
 {
-	text->setPosition(minCoord);
+	textSprite->setPosition(minCoord);
 }

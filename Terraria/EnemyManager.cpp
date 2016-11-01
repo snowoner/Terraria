@@ -30,7 +30,7 @@ void EnemyManager::render()
 	enemyFactory->render();
 }
 
-void EnemyManager::setDamage(const glm::vec2 posPlayer, int damage, int direction)
+void EnemyManager::setDamage(const glm::vec2 posPlayer, float damage, int direction)
 {
 	enemyFactory->setDamage(posPlayer, damage, direction);
 }

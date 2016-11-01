@@ -25,7 +25,6 @@ class Player
 public:
 	void init();
 	void update(int deltaTime, int delay);
-	void render();
 	
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
@@ -35,7 +34,7 @@ public:
 	int getState() const { return state; }
 	int getDirection() const { return direction; }
 	int getItem() const { return (item!=NULL) ? item->getType() : -1; }
-	float getLife() const { return life; }
+	float getHealth() const { return health; }
 
 	void receiveDamage(float damage);
 	void setItem(Element *item);
@@ -45,7 +44,7 @@ private:
 	int jumpAngle, startY;
 	int state, direction;
 	TileMap *map;
-	float life;
+	float health;
 
 	Element *item;
 };

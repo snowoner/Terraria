@@ -22,7 +22,7 @@ void Menu::init(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram) {
 	float midY = SCREEN_MIDY;
 
 	text = new Text();
-	text->init(shaderProgram, minCoords, 0);
+	text->init(&shaderProgram, minCoords, 0);
 	for (int i = 0; i < MAXOPTIONS; ++i) {
 		int length = (options[i]).length();
 		text->addText(options[i], glm::vec2(SCREEN_MIDX - length / 2.f  * MENU_TILESIZE,

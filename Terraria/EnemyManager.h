@@ -25,7 +25,7 @@ public:
 	void addEnemy();
 	void setTileMap(TileMap *tileMap);
 
-	void setDamage(const glm::vec2 posPlayer, int damage, int direction);
+	void setDamage(const glm::vec2 posPlayer, float damage, int direction);
 private:
 	glm::vec2 tileMapDispl;
 

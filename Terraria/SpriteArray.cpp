@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 void SpriteArray::init(ShaderProgram *program, const glm::vec2 &minCoords, const string &filename,
-	glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize, 
+	glm::ivec2 tileSheetSize, glm::ivec2 blockSize, glm::ivec2 tileSize,
 	int textoffset, bool alpha)
 {
 	tilesheet.loadFromFile(filename, TEXTURE_PIXEL_FORMAT_RGBA);
@@ -11,13 +11,13 @@ void SpriteArray::init(ShaderProgram *program, const glm::vec2 &minCoords, const
 	tilesheet.setMinFilter(GL_NEAREST);
 	tilesheet.setMagFilter(GL_NEAREST);
 	tilesheetSize = tileSheetSize;
-	blocksize = glm::ivec2(blockSize.x,blockSize.y);
+	blocksize = glm::ivec2(blockSize.x, blockSize.y);
 	tilesize = tileSize;
 	offset = textoffset;
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
 	alphaTex = alpha;
 	shaderProgram = program;
-	position = minCoords; 
+	position = minCoords;
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
@@ -51,7 +51,7 @@ void SpriteArray::removeTiles()
 }
 
 void SpriteArray::addTiles(vector<int> tile, glm::vec2 &position) {
-	tiles.push_back(std::pair<glm::vec2, vector<int>>(position,tile));
+	tiles.push_back(std::pair<glm::vec2, vector<int>>(position, tile));
 }
 
 void SpriteArray::prepareArrays()
@@ -63,7 +63,7 @@ void SpriteArray::prepareArrays()
 	nTiles = 0;
 	halfTexel = glm::vec2(0.5f / tilesheet.width(), 0.5f / tilesheet.height());
 
-	for (std::vector<pair<glm::vec2,vector<int>>>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
+	for (std::vector<pair<glm::vec2, vector<int>>>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
 		posTile = it->first;
 
 		for (int c : it->second) {

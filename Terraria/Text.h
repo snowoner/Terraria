@@ -6,7 +6,7 @@
 class Text
 {
 public:
-	void init(ShaderProgram &shaderProgram, const glm::vec2 &minCoords, int type);
+	void init(ShaderProgram *shaderProgram, const glm::vec2 &minCoords, int type);
 	void render();
 
 	void setPosition(const glm::vec2 &minCoord);
@@ -21,7 +21,7 @@ public:
 		char *font;
 	};
 private:
-	SpriteArray *text;
+	SpriteArray *textSprite;
 };
 
 #endif // _TEXT_INCLUDE

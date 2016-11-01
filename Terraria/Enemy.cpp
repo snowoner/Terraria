@@ -11,7 +11,7 @@ Enemy::Enemy(const glm::ivec2 &tileMapPos) {
 void Enemy::init(Sprite &sprite, TileMap &tileMap)
 {
 	this->sprite = &sprite;
-	this->map = &tileMap;
+	this->map = &tileMap;	
 	monsterTime = 0.f;
 	bJumping = false;
 }
@@ -139,7 +139,7 @@ int Enemy::getDecision(const glm::vec2 &pos)
 	return decision;
 }
 
-void Enemy::setDamage(int damage)
+void Enemy::setDamage(float damage)
 {
 	health -= damage;
 }

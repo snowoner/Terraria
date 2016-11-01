@@ -60,7 +60,7 @@ ElementManager::ElementManager(const glm::ivec2 &minCoords, ShaderProgram &shade
 	sprites[SELECTION]->prepareArrays();
 
 	text = new Text();
-	text->init(shaderProgram, minCoords, 1);
+	text->init(&shaderProgram, minCoords, 1);
 	prepareSpritesItems();
 
 	setElementSelected(0);

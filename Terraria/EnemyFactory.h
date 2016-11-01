@@ -20,7 +20,7 @@ public:
 	Enemy *createEnemy(int type, Sprite &sprite);
 	void setTileMap(TileMap *tileMap);
 
-	void setDamage(const glm::vec2 posPlayer, int damage, int direction);
+	void setDamage(const glm::vec2 posPlayer, float damage, int direction);
 private:
 	vector<Enemy*> enemies;
 	TileMap *map;

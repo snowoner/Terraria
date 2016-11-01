@@ -57,7 +57,7 @@ void EnemyFactory::setTileMap(TileMap *tileMap)
 	map = tileMap;
 }
 
-void EnemyFactory::setDamage(const glm::vec2 posPlayer, int damage, int direction)
+void EnemyFactory::setDamage(const glm::vec2 posPlayer, float damage, int direction)
 {
 	for (Enemy* enemy : enemies)
 	{

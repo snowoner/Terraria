@@ -1,4 +1,5 @@
 #include "PlayerManager.h"
+#include "Game.h"
 
 enum Elements
 {
@@ -15,15 +16,20 @@ void PlayerManager::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProg
 
 	spritesheet.loadFromFile("images/player.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	elementSpritesheet.loadFromFile("images/items.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	
 	elementSprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.25f, 0.5f), &elementSpritesheet, &shaderProgram);
 	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(1.f / 3.f, 0.5f), &spritesheet, &shaderProgram);
 
 	addAnimations();
 
+	healthSprite.init(&shaderProgram, tileMapPos, 1);
+	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(SCREEN_WIDTH - 100,10));
+	healthSprite.prepareText();
+
 	tileMapDispl = tileMapPos;
 }
 
-void PlayerManager::update(int deltaTime)
+void PlayerManager::update(int deltaTime,const glm::vec2 &posCamera)
 {
 	player->update(deltaTime, sprite->keyFrame());
 
@@ -41,16 +47,17 @@ void PlayerManager::update(int deltaTime)
 		else if (elementSprite->animation() != (itemIndex * 4) + 1 - getDirection())
 			elementSprite->changeAnimation((itemIndex * 4) + 1 - getDirection());
 	}
-
+	
 	setSpritesPositions(player->getPosition());
 
 	int state = player->getState();
 	if (sprite->animation() != state) sprite->changeAnimation(state);
 }
+
 void PlayerManager::render()
 {
-	player->render();
 	sprite->render();
+	healthSprite.render();
 	if (player->getItem() != -1) elementSprite->render();
 }
 
@@ -59,7 +66,7 @@ void PlayerManager::setTileMap(TileMap *tileMap)
 	player->setTileMap(tileMap);
 }
 
-void PlayerManager::setPosition(const glm::vec2 &pos)
+void PlayerManager::setPlayerPosition(const glm::vec2 &pos)
 {
 	player->setPosition(pos);
 	setSpritesPositions(pos);
@@ -72,14 +79,22 @@ void PlayerManager::setItem(Element *item)
 
 void PlayerManager::receiveDamage(float damage)
 {
-
 	player->receiveDamage(damage);
+
+	healthSprite.removeTiles();
+	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(SCREEN_WIDTH - 100,10));
+	healthSprite.prepareText();
 }
 
 void PlayerManager::setSpritesPositions(const glm::vec2 &pos)
 {
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x), float(tileMapDispl.y + pos.y)));
 	elementSprite->setPosition(glm::vec2(float(tileMapDispl.x + pos.x + 16.f + 16.f*((getDirection() == LEFT) ? -1 : 1)), float(tileMapDispl.y + pos.y)));
+}
+
+void PlayerManager::setPosition(const glm::vec2 &pos)
+{
+	healthSprite.setPosition(pos);
 }
 
 int PlayerManager::getActualDelay()
