@@ -17,6 +17,7 @@ public:
 	void removeTiles();
 	void addTiles(vector<int> tiles, glm::vec2 &position);
 	void prepareArrays();
+	void free();
 private:
 	int nTiles;
 	ShaderProgram *shaderProgram;

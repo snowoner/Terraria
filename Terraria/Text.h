@@ -16,7 +16,7 @@ public:
 	void prepareText();
 public:
 	struct textType {
-		short tileSize, blockSize, offset;
+		short tileSize, blockSizeX, blockSizeY, offset;
 		short tileLengthX, tileLengthY;
 		char *font;
 	};

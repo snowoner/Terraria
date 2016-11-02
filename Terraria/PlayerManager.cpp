@@ -29,7 +29,7 @@ void PlayerManager::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProg
 	tileMapDispl = tileMapPos;
 }
 
-void PlayerManager::update(int deltaTime,const glm::vec2 &posCamera)
+void PlayerManager::update(int deltaTime)
 {
 	player->update(deltaTime, sprite->keyFrame());
 

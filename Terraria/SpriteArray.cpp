@@ -19,8 +19,6 @@ void SpriteArray::init(ShaderProgram *program, const glm::vec2 &minCoords, const
 	shaderProgram = program;
 	position = minCoords;
 
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
 }
 
 void SpriteArray::render() const
@@ -38,6 +36,11 @@ void SpriteArray::render() const
 	glEnableVertexAttribArray(texCoordLocation);
 	glDrawArrays(GL_TRIANGLES, 0, 6 * nTiles);
 	glDisable(GL_TEXTURE_2D);
+}
+
+void SpriteArray::free()
+{
+	//	glDeleteBuffers(1, &vbo);
 }
 
 void SpriteArray::setPosition(const glm::vec2 &minCoord)
@@ -94,7 +97,9 @@ void SpriteArray::prepareArrays()
 			posTile.y += tilesize.y;
 		}
 	}
+	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
+	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * nTiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 	posLocation = shaderProgram->bindVertexAttribute("position", 2, 4 * sizeof(float), 0);

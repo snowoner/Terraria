@@ -1,17 +1,18 @@
 #include "Text.h"
 
-Text::textType textTypes[2] =
+Text::textType textTypes[3] =
 {
-	{ 32, 32, int('A'), 9, 4, "images/fontMenu.png" },
-	{32,32, int('0'), 5, 2, "images/numbers.png" }
+	{ 32, 32 , 32, int('A'), 9, 4, "images/fontMenu.png" },
+	{ 8, 8, 8, int('0'), 5, 2, "images/numbers.png" },
+	{ 32, 32,64, int('A'), 6, 5, "images/fontBlood.png" }
 };
 
 void Text::init(ShaderProgram *shaderProgram, const glm::vec2 &minCoords, int type)
 {
 	textSprite = new SpriteArray();
-	textSprite->init(*(&shaderProgram), minCoords, textTypes[type].font,
+	textSprite->init(shaderProgram, minCoords, textTypes[type].font,
 		glm::vec2(textTypes[type].tileLengthX, textTypes[type].tileLengthY),
-		glm::ivec2(textTypes[type].blockSize, textTypes[type].blockSize), glm::ivec2(textTypes[type].tileSize, 0), textTypes[type].offset);
+		glm::ivec2(textTypes[type].blockSizeX, textTypes[type].blockSizeY), glm::ivec2(textTypes[type].tileSize, 0), textTypes[type].offset);
 }
 
 void Text::render()

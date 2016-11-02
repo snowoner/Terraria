@@ -102,40 +102,46 @@ void Scene::update(int deltaTime)
 			// TODO: only update camera when players moves
 			camera->update(deltaTime, posPlayer, glm::vec2(1, 1));
 			glm::ivec2 posCamera = camera->getPosition();
-			projection = glm::ortho(float(posCamera.x), float(posCamera.x + SCREEN_WIDTH - 1), float(posCamera.y + SCREEN_HEIGHT - 1), float(posCamera.y));
+
 
 			playerActions(posPlayer, posCamera);
+
+			playerManager->update(deltaTime);
+			playerManager->setPosition(posCamera);
+
 			elementCollecion(posPlayer);
 			elementSelection();
 
 			enemyManager->update(deltaTime, playerManager);
 			elementManager->update(deltaTime);
 			elementManager->setPosition(posCamera);
-			playerManager->update(deltaTime, posCamera);
-			playerManager->setPosition(camera->getPosition());
+
+			projection = glm::ortho(float(posCamera.x), float(posCamera.x + SCREEN_WIDTH - 1), float(posCamera.y + SCREEN_HEIGHT - 1), float(posCamera.y));
 
 
-			/*
-			for (unsigned int i = 0; i < enemies.size(); ++i) {
-			glm::vec2 posEnemy = enemies[i]->getPosition();
-			bool collision = map->playerCollisionBy(posPlayer, posEnemy);
-			enemies[i]->update(deltaTime, posPlayer, collision ? true : map->playerSeenBy(posPlayer, posEnemy), collision);
-			if (collision) {
-			player->receiveDamage(enemies[i]->getDamageDeal());
-			if (player->getLife() <= 0.f) {
-			state = ST_DEAD;
-			text = new Text();
-			text->init(texProgram, 0);
-			text->addText("DEAD", glm::vec2(SCREEN_MIDX-4/2.f*32, SCREEN_MIDY));
-			text->prepareText(glm::ivec2(SCREEN_X, SCREEN_Y));
+
+			if (playerManager->getHealth() <= 0.f) {
+				map->free();
+				map = TileMap::createTileMap("levels/Menu.txt", SCREEN_VEC, texProgram);
+				state = ST_DEAD;
+				text = new Text();
+				text->init(&texProgram, SCREEN_VEC, 2);
+				string textShown = "YOU ARE DEAD";
+				text->addText(textShown, glm::vec2(SCREEN_WIDTH / 2 - textShown.length() / 2.f * 32.f, SCREEN_HEIGHT / 2 - 32.f));
+				text->prepareText();
+				projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
+				//text->setPosition(SCREEN_VEC);
 			}
-			}
-			}*/
+
+
 		}
 		break;
 	case Scene::ST_DEAD:
 		// TODO: Show DEAD to screen and stop animations. Also play sound.
-
+		if (Game::instance().getKey(27)){
+			firstTime = true;
+			state = ST_MENU;
+		}
 		break;
 	case Scene::ST_CREDITS:
 		break;
@@ -213,15 +219,12 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 		if (delay == ACTION_DELAY && pressed != NULL){
 			if (dynamic_cast<Weapon*>(pressed->second) != 0) {
 				float damage = pressed->second->getDamage();
-				// TOOD: Set damage to all enemies within a size of weapon (distance from player)
 				enemyManager->setDamage(posPlayer, damage, playerManager->getDirection());
 			}
 			else {
 				if (map->insideDistance(posPlayer, *pressed->first, MAXDISTANCE_BUILD)) {
 					glm::ivec2 posElement = *pressed->first / (glm::ivec2(map->getTileSize(), map->getTileSize()));
 
-					// TODO: get hitsleft of the brick and dstroy it if its 0
-					// Have to create an structure to put different tiles
 					if (dynamic_cast<Pick*>(pressed->second) != 0 && map->getElementType(posElement) != NULL)
 					{
 						int type = map->getElementType(posElement);
