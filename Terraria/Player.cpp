@@ -12,7 +12,7 @@
 
 void Player::init()
 {
-	health = 5.f;
+	health = 100.f;
 	bJumping = false;
 	direction = LEFT;
 	state = STAND_LEFT;
