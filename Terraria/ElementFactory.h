@@ -25,41 +25,47 @@ public:
 
 	void init();
 	void update(int deltaTime);
-	void render();
 
 	void setPosition(const glm::vec2 &minCoords);
-
-	void setElementSelected(int selected);
-	Element* getElementByIndex(int index);
-	Element* getElementSelected();
-	int getIndexElementSelected();
+	void setTileMap(TileMap *tileMap);
 
 	void addElement(int type);
-	void collectElement(int index);
-	void consumeElement(Element *element, int quantity);
-	void removeElement(Element *element);
-	vector<pair<elementTypes, vector<craftMaterial>>> ElementFactory::listCraftItems();
+	void addElement(Element *element);
+	Element* getElementByIndex(int index);
 
-	void setTileMap(TileMap *tileMap);
-	void addMapMaterial(int type, glm::vec2 position);
-	vector<pair<glm::ivec2*, int>> getMapMaterials();
+	Element* getElementSelected();
+	void setElementIndexSelected(int selected);
+	int getElementIndexSelected();
+
+	void collectElement(int index);
+	void removeElement(Element *element);
+	void consumeElement(Element *element, int quantity);
+	bool equipElement(Element *element);
+	void unequipElement(int index);
 
 	void craftElement(int index);
 	vector<int> getMaterialsCanCraft() const { return itemsIndexToCraft; }
 	vector<pair<elementTypes, vector<craftMaterial>>> getCraftingMaterials();
-	vector<pair<elementTypes, vector<craftMaterial>>> craftintMaterials;
+	vector<pair<elementTypes, vector<craftMaterial>>> ElementFactory::listCraftItems();
+
+	void addMapMaterial(int type, glm::vec2 position);
+	vector<pair<glm::ivec2*, int>> getMapMaterials();
+
+	int getItemsSize() const { return elements.size(); }
+	vector<Element*> getEquip() const { return equip; }
 private:
 	int getElementPosition(Element *element);
 private:
 	int updateTime;
+	TileMap *map;
 
 	vector<Element*> elements;
 	int selected;
 
 	vector<pair<glm::ivec2*, int>> mapMaterials;
+	vector<Element*> equip;
 	vector<int> itemsIndexToCraft;
-	TileMap *map;
-
+	vector<pair<elementTypes, vector<craftMaterial>>> craftintMaterials;
 };
 
 #endif // _ELEMENTFACTORY_INCLUDE

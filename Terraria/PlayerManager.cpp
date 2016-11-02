@@ -9,7 +9,6 @@ enum Elements
 	LASTELEMENT
 };
 
-
 void PlayerManager::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram){
 	player = new Player();
 	player->init();

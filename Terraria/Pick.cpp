@@ -7,8 +7,9 @@ Pick::Pick()
 	damage = 5;
 	attSpeed = 1.f;
 	quantity = 1;
+	equip = false;
 }
 
-int Pick::getType(){
+elementTypes Pick::getType(){
 	return PICK;
 }

@@ -7,9 +7,10 @@ Material::Material(int type)
 	quantity = 1;
 	damage = 0;
 	attSpeed = 1.f;
+	equip = false;
 }
 
-int Material::getType()
+elementTypes Material::getType()
 {
 	return MATERIAL;
 }

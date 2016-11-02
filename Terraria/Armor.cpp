@@ -6,8 +6,9 @@ Armor::Armor()
 	damage = 0;
 	attSpeed = 1.f;
 	quantity = 1;
+	equip = true;
 }
 
-int Armor::getType(){
+elementTypes Armor::getType(){
 	return ARMOR;
 }

@@ -86,7 +86,7 @@ static void changeSize(int w, int h) {
 	// (you cant make a window of zero width).
 	if (h == 0)
 		h = 1;
-	float ratio = 1.0* w / h;
+	float ratio = 1.0f* w / h;
 
 	// Use the Projection Matrix
 	glMatrixMode(GL_PROJECTION);

@@ -1,14 +1,12 @@
 #include "ElementFactory.h"
-#include <iostream>
 
 #define MAXUPDATE_TIME 1000/16
-
 
 ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram)
 {
 	elements.push_back(new Pick());
-	elements.push_back(NULL);
 	elements.push_back(new Weapon());
+	elements.push_back(NULL);
 	elements.push_back(NULL);
 	elements.push_back(NULL);
 
@@ -49,13 +47,6 @@ void ElementFactory::update(int deltaTime)
 	}
 }
 
-// TODO: only render it when player change some weapon and at init
-void ElementFactory::render()
-{
-	for (Element* element : elements)
-		element->render();
-}
-
 void ElementFactory::setTileMap(TileMap *tileMap)
 {
 	map = tileMap;
@@ -63,32 +54,36 @@ void ElementFactory::setTileMap(TileMap *tileMap)
 
 void ElementFactory::addElement(int type)
 {
-	Element *el;
+	Element *element;
 	switch (type)
 	{
 	case WEAPON:
-		el = new Weapon();
+		element = new Weapon();
 		break;
 	case PICK:
-		el = new Pick();
+		element = new Pick();
 		break;
 	case ARMOR:
-		el = new Armor();
+		element = new Armor();
 		break;
 	default:
 		break;
 	}
+	addElement(element);
+}
 
+void ElementFactory::addElement(Element *element)
+{
 	bool found = false;
 	unsigned int i = 0;
 	while (i < elements.size() && found == false)
 	{
-		if (elements.at(i) == NULL)found = true;
+		if (elements[i] == NULL) found = true;
 		else i++;
 	}
 
-	if (found) elements[i] = el;
-	else elements.push_back(el);
+	if (found) elements[i] = element;
+	else elements.push_back(element);
 }
 
 Element* ElementFactory::getElementByIndex(int index)
@@ -96,25 +91,24 @@ Element* ElementFactory::getElementByIndex(int index)
 	return elements[index];
 }
 
-void ElementFactory::setElementSelected(int selected)
+Element* ElementFactory::getElementSelected()
+{
+	return (elements[selected] != NULL) ? elements[selected] : NULL;
+}
+
+void ElementFactory::setElementIndexSelected(int selected)
 {
 	this->selected = selected;
 }
 
-Element* ElementFactory::getElementSelected()
-{
-	return (elements.at(selected) != NULL) ? elements.at(selected) : NULL;
-}
-
-int ElementFactory::getIndexElementSelected()
+int ElementFactory::getElementIndexSelected()
 {
 	return selected;
 }
 
-// TODO: need to collect element passing element
 void ElementFactory::collectElement(int index)
 {
-	int type = mapMaterials.at(index).second;
+	int type = mapMaterials[index].second;
 	mapMaterials.erase(mapMaterials.begin() + index);
 
 	bool found = false;
@@ -137,13 +131,6 @@ void ElementFactory::collectElement(int index)
 	}
 }
 
-void ElementFactory::consumeElement(Element *element, int quantity)
-{
-	element->consume(quantity);
-	if (element->getQuantity() == 0)
-		this->removeElement(element);
-}
-
 void ElementFactory::removeElement(Element *element)
 {
 	int pos = this->getElementPosition(element);
@@ -152,6 +139,30 @@ void ElementFactory::removeElement(Element *element)
 		delete elements[pos];
 		elements[pos] = NULL;
 	}
+}
+
+void ElementFactory::consumeElement(Element *element, int quantity)
+{
+	element->consume(quantity);
+	if (element->getQuantity() == 0)
+		this->removeElement(element);
+}
+
+bool ElementFactory::equipElement(Element *element)
+{
+	if (element->canEquip()){
+		equip.push_back(element->clone());
+		removeElement(element);
+		return true;
+	}
+	return false;
+	
+}
+
+void ElementFactory::unequipElement(int index)
+{
+	addElement(equip[index]->clone());
+	equip.erase(equip.begin() + index);
 }
 
 void ElementFactory::craftElement(int index)
@@ -215,7 +226,6 @@ int ElementFactory::getElementPosition(Element *element)
 	return find(elements.begin(), elements.end(), element) - elements.begin();
 }
 
-// TODO: MapMaterials should have a paor (type, position)
 void ElementFactory::addMapMaterial(int type, glm::vec2 position)
 {
 	glm::ivec2 *pos = new glm::ivec2(position);

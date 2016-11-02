@@ -9,20 +9,14 @@
 class Camera
 {
 public:
-
 	Camera();
-	~Camera();
-	void init();
-	void update(int deltaTime, const glm::vec2 &pos, const glm::vec2 &vel);
+	void update(int deltaTime, const glm::vec2 &pos);
 	glm::vec2 getPosition() const { return posCamera; }
-
-
 private:
 	glm::vec2 posCamera;
-	float currentTime;
-	float cameraWidth, cameraHeight;
+	int currentTime;
+	int cameraWidth, cameraHeight;
 	float cameraVx, cameraVy;
-	
 };
 
 

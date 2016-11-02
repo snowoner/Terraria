@@ -4,6 +4,7 @@ class Pick :
 {
 public:
 	Pick();
-	int getType();
+	elementTypes getType();
+	Element* clone() const { return new Pick(*this); }
 };
 

@@ -1,10 +1,10 @@
-#pragma once
 #include "Element.h"
 class Material :
 	public Element
 {
 public:
 	Material(int type);
-	int getType();
+	elementTypes getType();
+	Element* clone() const { return new Material(*this); }
 };
 

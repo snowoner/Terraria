@@ -28,8 +28,6 @@ void Scene::init()
 {
 	initShaders();
 
-	map = TileMap::createTileMap("levels/Menu.txt", SCREEN_VEC, texProgram);
-
 	menu = new Menu();
 	menu->init(SCREEN_VEC, texProgram);
 
@@ -51,7 +49,6 @@ void Scene::update(int deltaTime)
 			{
 			case Menu::PLAY:
 				if (firstTime) {
-					map->free();
 					map = TileMap::createTileMap("levels/level01.txt", SCREEN_VEC, texProgram);
 
 					glm::vec2 posPlayer = glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize());
@@ -59,7 +56,7 @@ void Scene::update(int deltaTime)
 					playerManager->init(SCREEN_VEC, texProgram);
 					playerManager->setPlayerPosition(posPlayer);
 					playerManager->setTileMap(map);
-					camera->update(deltaTime, posPlayer, glm::vec2(1, 1));
+					camera->update(deltaTime, posPlayer);
 
 					enemyManager = new EnemyManager(SCREEN_VEC, texProgram);
 					enemyManager->setTileMap(map);
@@ -101,7 +98,7 @@ void Scene::update(int deltaTime)
 		else {
 			glm::vec2 posPlayer = playerManager->getPosition();
 			// TODO: only update camera when players moves
-			camera->update(deltaTime, posPlayer, glm::vec2(1, 1));
+			camera->update(deltaTime, posPlayer);
 			glm::ivec2 posCamera = camera->getPosition();
 
 
@@ -157,13 +154,14 @@ void Scene::render()
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-	map->render();
+
 	switch (state)
 	{
 	case Scene::ST_MENU:
 		menu->render();
 		break;
 	case Scene::ST_GAME:
+		map->render();
 		elementManager->render();
 		enemyManager->render();
 		playerManager->render();
@@ -185,9 +183,9 @@ void Scene::changeWindowSize(glm::ivec2 size)
 	if (state == ST_MENU && firstTime)
 		posPlayer = glm::vec2(screenSize.x / 3, screenSize.y / 3);
 	else posPlayer = playerManager->getPosition();
-	
+
 	glm::ivec2 posCamera = camera->getPosition();
-	camera->update(0.f, posPlayer, glm::vec2(1, 1));
+	camera->update(0, posPlayer);
 
 	projection = glm::ortho(float(posCamera.x), float(posCamera.x + screenSize.x - 1), float(posCamera.y + screenSize.y - 1), float(posCamera.y));
 }
@@ -263,9 +261,17 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 	}
 	else if (Game::instance().isMousePressed(0)) {
 		glm::ivec2 *pos = new glm::ivec2(Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
-		int craftElementSelected = elementManager->getCraftingElement(Game::instance().getMousePosition());
-		if (craftElementSelected != -1) elementManager->craftElement(craftElementSelected);
-		else pressed = new pair<glm::ivec2*, Element*>(pos, elementManager->getElementSelected());
+		int elementSelected = elementManager->getCraftingElement(Game::instance().getMousePosition());
+		if (elementSelected != -1) elementManager->craftElement(elementSelected);
+		else {
+			elementSelected = elementManager->getElement(Game::instance().getMousePosition());
+			if (elementSelected != -1) elementManager->equipElement(elementSelected);
+			else {
+				elementSelected = elementManager->getEquipElement(Game::instance().getMousePosition());
+				if (elementSelected != -1) elementManager->unequipElement(elementSelected);
+				else pressed = new pair<glm::ivec2*, Element*>(pos, elementManager->getElementSelected());
+			}
+		}
 	}
 }
 
@@ -294,7 +300,7 @@ void Scene::elementSelection()
 		else keyPressed++;
 	}
 	if (found) {
-		elementManager->setElementSelected(keyPressed - 1);
+		elementManager->setElementIndexSelected(keyPressed - 1);
 		playerManager->setItem(elementManager->getElementSelected());
 	}
 }

@@ -4,6 +4,7 @@ class Armor :
 {
 public:
 	Armor();
-	int getType();
+	elementTypes getType();
+	Element* clone() const { return new Armor(*this); }
 };
 
