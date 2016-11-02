@@ -81,7 +81,7 @@ void ElementManager::prepareSpritesItems()
 		{
 			tilesItems.push_back(element->getTileIndex());
 			string textQuantity = std::to_string(element->getQuantity());
-			text->addText(textQuantity, glm::vec2((ITEM_BLOCKSIZE + SLOT_OFFSET*1.33f)*i + ITEM_BLOCKSIZE - 8.f*textQuantity.length(), ITEM_BLOCKSIZE - 5.f));
+			text->addText(textQuantity, glm::vec2((ITEM_BLOCKSIZE + SLOT_OFFSET*1.33f)*i + ITEM_BLOCKSIZE - 16.f*textQuantity.length(), ITEM_BLOCKSIZE - 10.f));
 		}
 		else{
 			tilesItems.push_back(NULLTILE);

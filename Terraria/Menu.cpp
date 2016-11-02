@@ -8,8 +8,8 @@
 #define ARROW_TILESIZE 80
 #define OFFSET 16
 
-#define SCREEN_MIDX SCREEN_WIDTH / 2 -  MENU_TILESIZE
-#define SCREEN_MIDY SCREEN_HEIGHT / 2 - MENU_TILESIZE - Menu::MAXOPTIONS / 2.f * (MENU_TILESIZE + OFFSET)
+#define SCREEN_MIDX Game::instance().getSize().x / 2 -  MENU_TILESIZE
+#define SCREEN_MIDY Game::instance().getSize().y / 2 - MENU_TILESIZE - Menu::MAXOPTIONS / 2.f * (MENU_TILESIZE + OFFSET)
 
 #define ARROW_POS glm::vec2(float(SCREEN_MIDX - (options[posOption].length() / 2.f)  * MENU_TILESIZE - ARROW_TILESIZE) + position.x, float(SCREEN_MIDY + (MENU_TILESIZE + OFFSET)*posOption) + position.y)
 
@@ -19,18 +19,15 @@ const string options[Menu::MAXOPTIONS] = { "JUGAR", "OPCIONES", "CREDITOS", "SAL
 
 void Menu::init(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram) {
 	posOption = PLAY;
-	float midY = SCREEN_MIDY;
 
 	text = new Text();
 	text->init(&shaderProgram, minCoords, 0);
 	for (int i = 0; i < MAXOPTIONS; ++i) {
 		int length = (options[i]).length();
-		text->addText(options[i], glm::vec2(SCREEN_MIDX - length / 2.f  * MENU_TILESIZE,
-			midY + (MENU_TILESIZE + OFFSET)*i));
+		text->addText(options[i], glm::vec2(-length / 2.f  * MENU_TILESIZE, (MENU_TILESIZE + OFFSET)*i));
 	}
 	text->prepareText();
 	timeCapture = 0.f;
-
 
 	// Create arrow sprite for animation
 	spritesheet.loadFromFile("images/arrows.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -81,7 +78,7 @@ void Menu::render() {
 void Menu::setPosition(const glm::ivec2 &minCoords)
 {
 	position = minCoords;
-	text->setPosition(minCoords);
+	text->setPosition(minCoords + glm::ivec2(SCREEN_MIDX, SCREEN_MIDY));
 	sprite->setPosition(ARROW_POS);
 }
 

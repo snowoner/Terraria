@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Game.h"
 
 #define FACTOR 1.2f;
 
@@ -29,8 +30,8 @@ void Camera::update(int deltaTime, const glm::vec2 &pos, const glm::vec2 &vel)
 	velPlayer = vel;
 	posPlayer.x += loopTime * velPlayer.x;
 	posPlayer.y += loopTime * velPlayer.y;
-	cameraWidth = 680;
-	cameraHeight = 480;
+	cameraWidth = Game::instance().getSize().x;
+	cameraHeight = Game::instance().getSize().y;
 	if (velPlayer.x > 0.f)
 	{
 		if ((posPlayer.x - posCamera.x) > (cameraWidth / 3))

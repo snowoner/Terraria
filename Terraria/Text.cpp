@@ -3,7 +3,7 @@
 Text::textType textTypes[3] =
 {
 	{ 32, 32 , 32, int('A'), 9, 4, "images/fontMenu.png" },
-	{ 8, 8, 8, int('0'), 5, 2, "images/numbers.png" },
+	{ 32, 16, 16, int('0'), 5, 2, "images/numbers.png" },
 	{ 32, 32,64, int('A'), 6, 5, "images/fontBlood.png" }
 };
 

@@ -23,6 +23,17 @@ void Game::render()
 	scene.render();
 }
 
+void Game::changeSize(int w, int h)
+{
+	windowSize = glm::ivec2(w, h);
+	scene.changeWindowSize(windowSize);
+}
+
+glm::ivec2 Game::getSize()
+{
+	return windowSize;
+}
+
 void Game::keyPressed(int key)
 {
 	keys[key] = true;

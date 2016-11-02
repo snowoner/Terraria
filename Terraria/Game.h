@@ -5,9 +5,6 @@
 #include "Scene.h"
 
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-
 #define SCREEN_X 32
 #define SCREEN_Y 16
 #define SCREEN_VEC glm::ivec2(SCREEN_X, SCREEN_Y)
@@ -34,6 +31,7 @@ public:
 	void render();
 	
 	// Input callback methods
+	void changeSize(int w, int h);
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void specialKeyPressed(int key);
@@ -47,6 +45,7 @@ public:
 
 	bool isMousePressed(int button) const;
 	glm::ivec2 getMousePosition() const;
+	glm::ivec2 Game::getSize();
 
 private:
 	bool bPlay;                       // Continue to play game?
@@ -55,6 +54,8 @@ private:
 	                                  // we can have access at any time
 	bool bMousePressed[2];
 	glm::ivec2 mousePos;
+
+	glm::ivec2 windowSize;
 
 
 };

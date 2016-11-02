@@ -27,6 +27,7 @@ public:
 	void update(int deltaTime);
 	void render();
 
+	void changeWindowSize(glm::ivec2 size);
 private:
 	void initShaders();
 	void playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera);
@@ -54,6 +55,7 @@ private:
 	ElementManager *elementManager;
 
 	pair<glm::ivec2*, Element*> *pressed;
+	glm::ivec2 screenSize;
 };
 
 

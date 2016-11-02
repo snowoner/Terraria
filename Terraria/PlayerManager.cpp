@@ -23,7 +23,7 @@ void PlayerManager::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProg
 	addAnimations();
 
 	healthSprite.init(&shaderProgram, tileMapPos, 1);
-	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(SCREEN_WIDTH - 100,10));
+	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(Game::instance().getSize().x - 100,10));
 	healthSprite.prepareText();
 
 	tileMapDispl = tileMapPos;
@@ -82,7 +82,7 @@ void PlayerManager::receiveDamage(float damage)
 	player->receiveDamage(damage);
 
 	healthSprite.removeTiles();
-	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(SCREEN_WIDTH - 100,10));
+	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(Game::instance().getSize().x - 100,10));
 	healthSprite.prepareText();
 }
 

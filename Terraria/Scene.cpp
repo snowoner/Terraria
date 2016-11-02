@@ -34,8 +34,6 @@ void Scene::init()
 	menu->init(SCREEN_VEC, texProgram);
 
 	camera = new Camera();
-
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
 
 	firstTime = true;
@@ -88,7 +86,10 @@ void Scene::update(int deltaTime)
 				break;
 			}
 		}
-		else menu->update(deltaTime);
+		else{
+			menu->update(deltaTime);
+			menu->setPosition(camera->getPosition());
+		}
 		break;
 	case Scene::ST_GAME:
 		if (Game::instance().getKey(int('m')))
@@ -116,9 +117,7 @@ void Scene::update(int deltaTime)
 			elementManager->update(deltaTime);
 			elementManager->setPosition(posCamera);
 
-			projection = glm::ortho(float(posCamera.x), float(posCamera.x + SCREEN_WIDTH - 1), float(posCamera.y + SCREEN_HEIGHT - 1), float(posCamera.y));
-
-
+			projection = glm::ortho(float(posCamera.x), float(posCamera.x + screenSize.x - 1), float(posCamera.y + screenSize.y - 1), float(posCamera.y));
 
 			if (playerManager->getHealth() <= 0.f) {
 				map->free();
@@ -127,13 +126,10 @@ void Scene::update(int deltaTime)
 				text = new Text();
 				text->init(&texProgram, SCREEN_VEC, 2);
 				string textShown = "YOU ARE DEAD";
-				text->addText(textShown, glm::vec2(SCREEN_WIDTH / 2 - textShown.length() / 2.f * 32.f, SCREEN_HEIGHT / 2 - 32.f));
+				text->addText(textShown, glm::vec2(screenSize.x / 2 - textShown.length() / 2.f * 32.f, screenSize.y / 2 - 32.f));
 				text->prepareText();
-				projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
-				//text->setPosition(SCREEN_VEC);
+				projection = glm::ortho(0.f, float(screenSize.x - 1), float(screenSize.y - 1), 0.f);
 			}
-
-
 		}
 		break;
 	case Scene::ST_DEAD:
@@ -180,6 +176,20 @@ void Scene::render()
 	default:
 		break;
 	}
+}
+
+void Scene::changeWindowSize(glm::ivec2 size)
+{
+	screenSize = size;
+	glm::vec2 posPlayer;
+	if (state == ST_MENU && firstTime)
+		posPlayer = glm::vec2(screenSize.x / 3, screenSize.y / 3);
+	else posPlayer = playerManager->getPosition();
+	
+	glm::ivec2 posCamera = camera->getPosition();
+	camera->update(0.f, posPlayer, glm::vec2(1, 1));
+
+	projection = glm::ortho(float(posCamera.x), float(posCamera.x + screenSize.x - 1), float(posCamera.y + screenSize.y - 1), float(posCamera.y));
 }
 
 void Scene::initShaders()
