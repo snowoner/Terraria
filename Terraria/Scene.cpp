@@ -110,7 +110,7 @@ void Scene::update(int deltaTime)
 			elementCollecion(posPlayer);
 			elementSelection();
 
-			//enemyManager->update(deltaTime, playerManager->getPosition());
+			enemyManager->update(deltaTime, playerManager->getPosition());
 
 			vector<float> damages = enemyManager->getDamageEnemies();
 			float defense = elementManager->getTotalDefenseEquip();
