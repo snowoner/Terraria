@@ -4,10 +4,12 @@ Brick::Brick()
 
 }
 
-Brick::Brick(int type, int hits)
+Brick::Brick(int type, int tile, int hits, bool destroyable)
 {
 	this->hits = hits;
 	this->type = type;
+	this->tile = tile;
+	this->destroyable = destroyable;
 }
 
 void Brick::hit()
@@ -15,7 +17,7 @@ void Brick::hit()
 	hits--;
 }
 
-void Brick::setType(int type)
+void Brick::setTile(int tile)
 {
-	this->type = type;
+	this->tile= tile;
 }

@@ -6,6 +6,7 @@ Armor::Armor()
 	damage = 0;
 	attSpeed = 1.f;
 	quantity = 1;
+	defense = 5;
 	equip = true;
 }
 

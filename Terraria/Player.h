@@ -36,7 +36,7 @@ public:
 	int getItem() const { return (item!=NULL) ? item->getType() : -1; }
 	float getHealth() const { return health; }
 
-	void receiveDamage(float damage);
+	void receiveDamage(float damage, float defense);
 	void setItem(Element *item);
 private:
 	bool bJumping;

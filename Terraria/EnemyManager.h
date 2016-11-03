@@ -19,13 +19,14 @@ public:
 
 	EnemyManager(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
 	
-	void update(int deltaTime, PlayerManager *playerManager);
+	void update(int deltaTime, const glm::vec2 &posPlayer);
 	void render();
 	
 	void addEnemy();
 	void setTileMap(TileMap *tileMap);
 
 	void setDamage(const glm::vec2 posPlayer, float damage, int direction);
+	vector<float> getDamageEnemies();
 private:
 	glm::vec2 tileMapDispl;
 

@@ -229,7 +229,7 @@ int ElementFactory::getElementPosition(Element *element)
 void ElementFactory::addMapMaterial(int type, glm::vec2 position)
 {
 	glm::ivec2 *pos = new glm::ivec2(position);
-	mapMaterials.push_back(pair<glm::ivec2 *, int>(pos, type));
+	mapMaterials.push_back(pair<glm::ivec2 *, int>(pos, type-1));
 }
 
 vector<pair<glm::ivec2*, int>> ElementFactory::getMapMaterials()

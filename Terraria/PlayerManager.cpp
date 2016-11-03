@@ -15,14 +15,14 @@ void PlayerManager::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProg
 
 	spritesheet.loadFromFile("images/player.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	elementSpritesheet.loadFromFile("images/items.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	
+
 	elementSprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.25f, 0.5f), &elementSpritesheet, &shaderProgram);
 	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(1.f / 3.f, 0.5f), &spritesheet, &shaderProgram);
 
 	addAnimations();
 
 	healthSprite.init(&shaderProgram, tileMapPos, 1);
-	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(Game::instance().getSize().x - 100,10));
+	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(Game::instance().getSize().x - 100, 10));
 	healthSprite.prepareText();
 
 	tileMapDispl = tileMapPos;
@@ -46,7 +46,7 @@ void PlayerManager::update(int deltaTime)
 		else if (elementSprite->animation() != (itemIndex * 4) + 1 - getDirection())
 			elementSprite->changeAnimation((itemIndex * 4) + 1 - getDirection());
 	}
-	
+
 	setSpritesPositions(player->getPosition());
 
 	int state = player->getState();
@@ -76,12 +76,12 @@ void PlayerManager::setItem(Element *item)
 	player->setItem(item);
 }
 
-void PlayerManager::receiveDamage(float damage)
+void PlayerManager::receiveDamage(float damage, float defense)
 {
-	player->receiveDamage(damage);
+	player->receiveDamage(damage, defense);
 
 	healthSprite.removeTiles();
-	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(Game::instance().getSize().x - 100,10));
+	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(Game::instance().getSize().x - 100, 10));
 	healthSprite.prepareText();
 }
 

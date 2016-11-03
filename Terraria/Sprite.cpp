@@ -75,6 +75,11 @@ void Sprite::free()
 	glDeleteBuffers(1, &vbo);
 }
 
+Sprite* Sprite::clone()
+{
+	return new Sprite(*this);
+}
+
 void Sprite::setNumberAnimations(int nAnimations)
 {
 	animations.clear();

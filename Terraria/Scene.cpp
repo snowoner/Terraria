@@ -110,7 +110,12 @@ void Scene::update(int deltaTime)
 			elementCollecion(posPlayer);
 			elementSelection();
 
-			enemyManager->update(deltaTime, playerManager);
+			//enemyManager->update(deltaTime, playerManager->getPosition());
+
+			vector<float> damages = enemyManager->getDamageEnemies();
+			float defense = elementManager->getTotalDefenseEquip();
+			for (unsigned int i = 0; i < damages.size(); ++i) playerManager->receiveDamage(damages[i], defense);
+
 			elementManager->update(deltaTime);
 			elementManager->setPosition(posCamera);
 
@@ -118,7 +123,6 @@ void Scene::update(int deltaTime)
 
 			if (playerManager->getHealth() <= 0.f) {
 				map->free();
-				map = TileMap::createTileMap("levels/Menu.txt", SCREEN_VEC, texProgram);
 				state = ST_DEAD;
 				text = new Text();
 				text->init(&texProgram, SCREEN_VEC, 2);
@@ -130,7 +134,6 @@ void Scene::update(int deltaTime)
 		}
 		break;
 	case Scene::ST_DEAD:
-		// TODO: Show DEAD to screen and stop animations. Also play sound.
 		if (Game::instance().getKey(27)){
 			firstTime = true;
 			state = ST_MENU;
@@ -236,13 +239,14 @@ void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCame
 					if (dynamic_cast<Pick*>(pressed->second) != 0 && map->getElementType(posElement) != NULL)
 					{
 						int type = map->getElementType(posElement);
-						map->hitElement(posElement);
-						if (map->getElementHitsLeft(posElement) == 0)
-						{
-							//map->buildElement(posElement, NULL);
-							elementManager->addElementMaterial(type, *pressed->first);
+						if (map->hitElement(posElement)){
+							if (map->getElementHitsLeft(posElement) == 0)
+							{
+								//map->buildElement(posElement, NULL);
+								elementManager->addElementMaterial(type, *pressed->first);
+							}
+							map->prepareArrays(SCREEN_VEC, false);
 						}
-						map->prepareArrays(SCREEN_VEC, false);
 					}
 					else if (dynamic_cast<Material*>(pressed->second) != 0) {
 						if (map->getElementType(posElement) == NULL) {

@@ -56,7 +56,7 @@ void Player::update(int deltaTime, int delay)
 		{
 			if (Game::instance().isMousePressed(0)) {
 				Game::instance().mouseRelease(0);
-				if (item != NULL) 
+				if (item != NULL)
 					state = (getDirection() == RIGHT) ? HAND_RIGHT : HAND_LEFT;
 			}
 			else {
@@ -121,8 +121,8 @@ void Player::setDirection(int dir)
 	direction = dir;
 }
 
-void Player::receiveDamage(float damage) {
-	health -= damage;
+void Player::receiveDamage(float damage, float defense) {
+	health -= max(damage - defense, 1.f);
 }
 
 void Player::setItem(Element *item)

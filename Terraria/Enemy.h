@@ -18,12 +18,14 @@ class Enemy
 protected:
 	Enemy(const glm::ivec2 &tileMapPos);
 public:
-	void init(Sprite &sprite, TileMap &tileMap);
-	void update(int deltaTime, PlayerManager *playerManager, bool playerSeen, bool playerCollision);
+	void init(Sprite &sprite, TileMap &tileMap, glm::vec2 position);
+	bool update(int deltaTime, const glm::vec2 &posPlayer, bool playerSeen, bool playerCollision);
 	void render();
 
-	void setPosition(const glm::vec2 &pos);
+	glm::vec2 Enemy::getRoundPosition(glm::vec2 position, int dir);
+
 	glm::vec2 getPosition() const { return position; }
+	float getDamage() const { return damage; }
 	//	float getDamageDeal() const { return (attackDelay == 0) ? monster->damage : 0; }
 
 	int getState();
@@ -51,6 +53,9 @@ private:
 	TileMap *map;
 
 	glm::vec2 tileMapDispl;
+
+	bool roundLeft;
+	pair<glm::ivec2,glm::ivec2> roundPositions;
 };
 
 #endif // _ENEMY_INCLUDE

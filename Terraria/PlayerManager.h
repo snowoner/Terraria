@@ -23,7 +23,7 @@ public:
 	void setPosition(const glm::vec2 &pos);
 	void setState(int state);
 
-	void receiveDamage(float damage);
+	void receiveDamage(float damage, float defense);
 
 	void setItem(Element *item);
 	void setPositionPressed(glm::ivec2 position);

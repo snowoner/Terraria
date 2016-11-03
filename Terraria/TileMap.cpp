@@ -4,7 +4,9 @@
 #include <vector>
 #include "TileMap.h"
 
-int hitsTile[2] = { 2, 3 };
+TileMap::tilesConfig tilesConf[3] = {
+	{ 0, false }, { 2, true }, { 4, true }
+};
 
 TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
 {
@@ -89,7 +91,7 @@ bool TileMap::loadLevel(const string &levelFile)
 			if (tile == 0)
 				map[j*mapSize.x + i] = NULL;
 			else {
-				map[j*mapSize.x + i] = new Brick(tile, hitsTile[(tile - 1) / tilesheetSize.x]);
+				map[j*mapSize.x + i] = new Brick(tile/tilesheetSize.x + 1,tile, tilesConf[(tile - 1) / tilesheetSize.x].hits, tilesConf[(tile - 1) / tilesheetSize.x].destroyable);
 			}
 		}
 		fin.get();
@@ -117,7 +119,7 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 			{
 				if (map[j * mapSize.x + i] != NULL)
 				{
-					tile = map[j * mapSize.x + i]->getType();
+					tile = map[j * mapSize.x + i]->getTile();
 					// Non-empty tile
 					nTiles++;
 					posTile = glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize);
@@ -148,7 +150,7 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 			{
 				if (map[j * mapSize.x + i] != NULL)
 				{
-					tile = map[j * mapSize.x + i]->getType();
+					tile = map[j * mapSize.x + i]->getTile();
 					nTiles++;
 					posTile = glm::vec2(minCoords.x + i*tileSize, minCoords.y + j *tileSize);
 					texCoordTile[0] = glm::vec2(float((tile - 1) % tilesheetSize.x) / tilesheetSize.x, float((tile - 1) / tilesheetSize.x) / tilesheetSize.y);
@@ -185,7 +187,7 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 void TileMap::buildElement(glm::ivec2 posElement, int type)
 {
 	// Do it to TileMap (getting material with player.removeElement()) and building it in tileMap
-	map[posElement.y*mapSize.x + posElement.x] = (type == 0) ? NULL : new Brick(type, hitsTile[(type + 1) / 2 - 1]);
+	map[posElement.y*mapSize.x + posElement.x] = (type == 0) ? NULL : new Brick(type, (type-1)*tilesheetSize.x+5, tilesConf[(type + 1) / 2 - 1].hits, tilesConf[(type + 1) / 2 - 1].destroyable);
 	vertices.resize(vertices.size() + ((type == 0) ? -1 : 1) * 24);
 }
 
@@ -193,23 +195,28 @@ int TileMap::getElementType(glm::ivec2 posElement)
 {
 	// Do it to TileMap (getting material with player.removeElement()) and building it in tileMap
 	if (map[posElement.y*mapSize.x + posElement.x] == NULL) return NULL;
-	return map[posElement.y*mapSize.x + posElement.x]->getType() / tilesheetSize.x + 1;
+	return map[posElement.y*mapSize.x + posElement.x]->getType();
 }
 
-void TileMap::hitElement(glm::ivec2 posElement)
+bool TileMap::hitElement(glm::ivec2 posElement)
 {
+	bool hit = false;
 	int pos = posElement.y*mapSize.x + posElement.x;
 	if (!map[pos] == NULL)
 	{
-		map[pos]->hit();
-		if (map[pos]->gethits() == 0) buildElement(posElement, NULL);
-		else {
-			int type = map[pos]->getType();
-			if (type % 5 == 1) type++;
-			type++;
-			map[pos]->setType(type);
+		if (map[pos]->isDestroyable()) {
+			map[pos]->hit();
+			hit = true;
+			if (map[pos]->gethits() == 0) buildElement(posElement, NULL);
+			else {
+				int tile = map[pos]->getTile();
+				if (tile % 5 == 1) tile++;
+				tile++;
+				map[pos]->setTile(tile);
+			}
 		}
 	}
+	return hit;
 }
 
 int TileMap::getElementHitsLeft(glm::ivec2 posElement)

@@ -16,6 +16,7 @@ public:
 	int getTileIndex() const { return tileIndex; }
 	int getQuantity() const { return quantity; };
 	bool canEquip() const { return equip; }
+	int getDefense() const { return defense; }
 
 	void add(int quantity);
 	void consume(int quantity);
@@ -25,7 +26,8 @@ public:
 protected:
 	float damage, attSpeed;
 	int tileIndex, quantity;
-	bool equip;
+	bool equip; 
+	int defense;
 };
 
 #endif // _ELEMENT_INCLUDE

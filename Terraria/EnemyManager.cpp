@@ -13,7 +13,7 @@ EnemyManager::EnemyManager(const glm::ivec2 &tileMapPos, ShaderProgram &shaderPr
 }
 
 void EnemyManager::addEnemy() {
-	enemyFactory->createEnemy(0, *(enemySprites->at(0)->sprite));
+	enemyFactory->createEnemy(0, *(enemySprites->at(0)->sprite->clone()));
 }
 
 void EnemyManager::setTileMap(TileMap *tileMap)
@@ -21,8 +21,8 @@ void EnemyManager::setTileMap(TileMap *tileMap)
 	enemyFactory->setTileMap(tileMap);
 }
 
-void EnemyManager::update(int deltaTime,PlayerManager *playerManager) {
-	enemyFactory->update(deltaTime, playerManager);
+void EnemyManager::update(int deltaTime, const glm::vec2 &posPlayer) {
+	enemyFactory->update(deltaTime, posPlayer);
 }
 
 void EnemyManager::render()
@@ -33,4 +33,9 @@ void EnemyManager::render()
 void EnemyManager::setDamage(const glm::vec2 posPlayer, float damage, int direction)
 {
 	enemyFactory->setDamage(posPlayer, damage, direction);
+}
+
+vector<float> EnemyManager::getDamageEnemies()
+{
+	return enemyFactory->getDamageEnemies();
 }

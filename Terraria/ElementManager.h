@@ -18,10 +18,11 @@ public:
 	void setElementIndexSelected(int selected);
 	Element* getElementSelected();
 
+	void collectElement(int index);
 	void removeElement(Element *element);
 	void consumeElement(Element *element, int quantity);
 
-	void collectElement(int index);
+	float getTotalDefenseEquip();
 	void equipElement(int index);
 	void unequipElement(int index);
 	void craftElement(int index);

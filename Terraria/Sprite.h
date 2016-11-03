@@ -35,6 +35,8 @@ public:
 	
 	void setPosition(const glm::vec2 &pos);
 
+	Sprite* clone();
+
 private:
 	Texture *texture;
 	ShaderProgram *shaderProgram;

@@ -222,6 +222,14 @@ void ElementManager::consumeElement(Element *element, int quantity)
 	prepareSpritesItems();
 }
 
+float ElementManager::getTotalDefenseEquip()
+{
+	float totalDefense = 0.f;
+	vector<Element*> equip = elementFactory->getEquip();
+	for (unsigned int i = 0; i < equip.size(); ++i) totalDefense += equip[i]->getDefense();
+	return totalDefense;
+}
+
 void ElementManager::equipElement(int index)
 {
 	if (elementFactory->equipElement(elementFactory->getElementByIndex(index)))

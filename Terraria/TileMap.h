@@ -21,6 +21,11 @@ class TileMap
 {
 
 public:
+	struct tilesConfig{
+		int hits;
+		bool destroyable;
+	};
+
 	// Tile maps can only be created inside an OpenGL context
 	static TileMap *createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program);
 
@@ -47,8 +52,7 @@ public:
 	void buildElement(glm::ivec2 posElement, int type);
 	int getElementType(glm::ivec2 posElement);
 	int getElementHitsLeft(glm::ivec2 posElement);
-	void hitElement(glm::ivec2 posElement);
-
+	bool hitElement(glm::ivec2 posElement);
 private:
 	bool loadLevel(const string &levelFile);
 

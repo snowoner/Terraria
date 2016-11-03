@@ -14,18 +14,21 @@ public:
 	EnemyFactory(const glm::vec2 &tileMapDispl);
 	~EnemyFactory();
 
-	void update(int deltaTime, PlayerManager *playerManager);
+	void update(int deltaTime, const glm::vec2 &posPlayer);
 	void render();
 	
 	Enemy *createEnemy(int type, Sprite &sprite);
 	void setTileMap(TileMap *tileMap);
 
 	void setDamage(const glm::vec2 posPlayer, float damage, int direction);
+	vector<float> getDamageEnemies();
 private:
 	vector<Enemy*> enemies;
 	TileMap *map;
 	glm::vec2 tileMapDispl;
 	int size;
+
+	vector<float> damages;
 };
 
 #endif //_ENEMYFACTORY_INCLUDE
