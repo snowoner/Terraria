@@ -47,7 +47,7 @@ public:
 	bool playerSeenBy(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance);
 	bool playerCollisionBy(const glm::vec2 &pos1, const glm::vec2 &pos2);
 
-	bool insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance);
+	bool insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, float maxDistance);
 
 	void buildElement(glm::ivec2 posElement, int type);
 	int getElementType(glm::ivec2 posElement);
@@ -55,7 +55,6 @@ public:
 	bool hitElement(glm::ivec2 posElement);
 private:
 	bool loadLevel(const string &levelFile);
-
 private:
 	GLuint vao;
 	GLuint vbo;

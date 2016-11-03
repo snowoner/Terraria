@@ -1,10 +1,11 @@
 #include "Text.h"
 
-Text::textType textTypes[3] =
+Text::textType textTypes[4] =
 {
 	{ 32, 32 , 32, int('A'), 9, 4, "images/fontMenu.png" },
 	{ 32, 16, 16, int('0'), 5, 2, "images/numbers.png" },
-	{ 32, 32,64, int('A'), 6, 5, "images/fontBlood.png" }
+	{ 32, 32, 64, int('A'), 6, 5, "images/fontBlood.png" },
+	{ 16, 24, 24, int('!')-1, 10, 10, "images/fontNormal.png" }
 };
 
 void Text::init(ShaderProgram *shaderProgram, const glm::vec2 &minCoords, int type)

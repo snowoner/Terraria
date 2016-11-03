@@ -15,7 +15,7 @@
 
 #define MAX_TIMECAPTURE 1000.f/8.f
 
-const string options[Menu::MAXOPTIONS] = { "JUGAR", "OPCIONES", "CREDITOS", "SALIR" };
+const string options[Menu::MAXOPTIONS] = { "JUGAR", "INSTRUCCIONES", "CREDITOS", "SALIR" };
 
 void Menu::init(const glm::ivec2 &minCoords, ShaderProgram &shaderProgram) {
 	posOption = PLAY;

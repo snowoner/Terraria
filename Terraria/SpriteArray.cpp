@@ -40,7 +40,7 @@ void SpriteArray::render() const
 
 void SpriteArray::free()
 {
-	//	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &vbo);
 }
 
 void SpriteArray::setPosition(const glm::vec2 &minCoord)

@@ -28,7 +28,10 @@ private:
 	glm::vec2 tileMapDispl;
 	int size;
 
+	int updateTime;
+
 	vector<float> damages;
+	glm::vec2 respawn;
 };
 
 #endif //_ENEMYFACTORY_INCLUDE

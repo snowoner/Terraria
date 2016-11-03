@@ -30,11 +30,11 @@ public:
 	void changeWindowSize(glm::ivec2 size);
 private:
 	void initShaders();
-	void playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera);
+	void userActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera);
 	void elementCollecion(const glm::ivec2 &posPlayer);
 	void Scene::elementSelection();
 private:
-	enum State { ST_MENU, ST_GAME, ST_DEAD, ST_CREDITS };
+	enum State { ST_MENU, ST_GAME, ST_INSTR, ST_DEAD, ST_CREDITS };
 	State state;
 	bool firstTime;
 

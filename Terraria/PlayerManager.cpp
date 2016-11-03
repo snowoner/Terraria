@@ -24,7 +24,6 @@ void PlayerManager::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProg
 	healthSprite.init(&shaderProgram, tileMapPos, 1);
 	healthSprite.addText(std::to_string((int)getHealth()), glm::vec2(Game::instance().getSize().x - 100, 10));
 	healthSprite.prepareText();
-
 	tileMapDispl = tileMapPos;
 }
 
@@ -69,6 +68,8 @@ void PlayerManager::setPlayerPosition(const glm::vec2 &pos)
 {
 	player->setPosition(pos);
 	setSpritesPositions(pos);
+
+	healthSprite.setPosition(pos - glm::vec2(50,50));
 }
 
 void PlayerManager::setItem(Element *item)

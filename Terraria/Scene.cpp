@@ -6,7 +6,7 @@
 
 
 #define INIT_PLAYER_X_TILES 4
-#define INIT_PLAYER_Y_TILES 25
+#define INIT_PLAYER_Y_TILES 11
 
 
 Scene::Scene()
@@ -72,7 +72,24 @@ void Scene::update(int deltaTime)
 				state = ST_GAME;
 
 				break;
-			case Menu::OPTIONS:
+			case Menu::INSTRUCCIONS:
+			{
+									   text = new Text();
+									   text->init(&texProgram, SCREEN_VEC, 3);
+									   const int nLines = 3;
+									   string textsShown[nLines] = {
+										   "Puedes cambiar de element seleccionado con los numeros 1 a 5.",
+										   "Para coger materiales pica a los bloques( dependiendo del ",
+										   "material necesitaras picar más)."
+									   };
+									   for (int i = 0; i < nLines; ++i) {
+										   text->addText(textsShown[i], glm::vec2(screenSize.x / 2 - textsShown[i].length() / 2.f * 16.f, screenSize.y / 2 - 16.f*(nLines - i)));
+									   }
+									   text->prepareText();
+									   projection = glm::ortho(0.f, float(screenSize.x - 1), float(screenSize.y - 1), 0.f);
+
+									   state = ST_INSTR;
+			}
 				break;
 			case Menu::CREDITS:
 				break;
@@ -102,7 +119,7 @@ void Scene::update(int deltaTime)
 			glm::ivec2 posCamera = camera->getPosition();
 
 
-			playerActions(posPlayer, posCamera);
+			userActions(posPlayer, posCamera);
 
 			playerManager->update(deltaTime);
 			playerManager->setPosition(posCamera);
@@ -169,6 +186,7 @@ void Scene::render()
 		enemyManager->render();
 		playerManager->render();
 		break;
+	case Scene::ST_INSTR:
 	case Scene::ST_DEAD:
 		text->render();
 		break;
@@ -223,7 +241,7 @@ void Scene::initShaders()
 	fShader.free();
 }
 
-void Scene::playerActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera)
+void Scene::userActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera)
 {
 	if (pressed != NULL && playerManager->getState() >= PlayerAnims::HAND_RIGHT && playerManager->getState() < LASTANIM) {
 		int delay = playerManager->getActualDelay();

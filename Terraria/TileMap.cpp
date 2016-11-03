@@ -380,7 +380,7 @@ bool TileMap::playerCollisionBy(const glm::vec2 &pos1, const glm::vec2 &pos2)
 }
 
 // TODO: get pos1.tileSize and pos2.tilesize
-bool TileMap::insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, int maxDistance) {
+bool TileMap::insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, float maxDistance) {
 	float x1 = (pos2.x > pos1.x) ? (pos1.x + 32 - 1) / tileSize : pos1.x / tileSize;
 	float x2 = pos2.x / tileSize;
 	float y1 = (pos2.y < pos1.y) ? (pos1.y + 32 - 1) / tileSize : pos1.y / tileSize;
@@ -399,5 +399,5 @@ bool TileMap::insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, int m
 		std::swap(y1, y2);
 	}
 
-	return (std::round(x2 - x1) <= maxDistance);
+	return (x2 - x1 <= maxDistance);
 }

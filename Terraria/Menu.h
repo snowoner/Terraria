@@ -17,7 +17,7 @@ public:
 
 	void setPosition(const glm::ivec2 &minCoords);
 
-	const enum MENU_OPTION { PLAY, OPTIONS, CREDITS, EXIT, MAXOPTIONS };
+	const enum MENU_OPTION { PLAY, INSTRUCCIONS, CREDITS, EXIT, MAXOPTIONS };
 	MENU_OPTION getMenuOption();
 
 private:
@@ -26,7 +26,6 @@ private:
 
 	glm::vec2 position;
 
-	// Sprites
 	Texture spritesheet;
 	Sprite *sprite;
 	float timeCapture;
