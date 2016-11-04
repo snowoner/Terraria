@@ -9,6 +9,11 @@ ElementFactory::ElementFactory(const glm::ivec2 &minCoords, ShaderProgram &shade
 	elements.push_back(NULL);
 	elements.push_back(NULL);
 	elements.push_back(NULL);
+	elements.push_back(NULL);
+	elements.push_back(NULL);
+	elements.push_back(NULL);
+	elements.push_back(NULL);
+	elements.push_back(NULL);
 
 	updateTime = 0;
 }
@@ -167,7 +172,7 @@ void ElementFactory::unequipElement(int index)
 
 void ElementFactory::craftElement(int index)
 {
-	pair < int, vector<ElementFactory::craftMaterial >> itemToCraft = craftintMaterials.at(index);
+	pair < int, vector<ElementFactory::craftMaterial >> itemToCraft = listCraftItems().at(index);
 	vector<int> indexMats;
 	for (unsigned i = 0; i < elements.size(); ++i){
 		if (elements.at(i) != NULL){
@@ -207,7 +212,7 @@ vector<pair<elementTypes, vector<ElementFactory::craftMaterial>>> ElementFactory
 			craftMaterial material = elementToCraft.second.at(j);
 			found = false;
 			for (int k : indexMats){
-				if (elements.at(k)->getTileIndex() == material.type)
+				if (elements.at(k)->getTileIndex()-1 == material.type)
 					found = material.quantity <= elements.at(k)->getQuantity();
 			}
 			j++;
@@ -229,7 +234,7 @@ int ElementFactory::getElementPosition(Element *element)
 void ElementFactory::addMapMaterial(int type, glm::vec2 position)
 {
 	glm::ivec2 *pos = new glm::ivec2(position);
-	mapMaterials.push_back(pair<glm::ivec2 *, int>(pos, type-1));
+	mapMaterials.push_back(pair<glm::ivec2 *, int>(pos, type));
 }
 
 vector<pair<glm::ivec2*, int>> ElementFactory::getMapMaterials()

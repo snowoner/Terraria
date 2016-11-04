@@ -1,12 +1,12 @@
 #include "ElementManager.h"
 #include "Game.h"
 
-#define SLOT_TILESIZEX 300
+#define SLOT_TILESIZEX 600
 #define SLOT_TILESIZEY 56
 #define SLOT_OFFSET 3
-#define CRAFT_SIZE 24
+#define CRAFT_SIZE 40
 #define EQUIP_SIZE 48
-#define MAX_SLOT 5
+#define MAX_SLOT 10
 
 #define POSINIT glm::vec2(5.f,5.f)
 #define POS_CRAFTING_ITEMS (POSINIT + glm::vec2(SLOT_OFFSET, SLOT_OFFSET + 150))
@@ -276,7 +276,7 @@ int ElementManager::getElement(glm::vec2 position)
 
 int ElementManager::getCraftingElement(glm::vec2 position)
 {
-	return getElementIndexPosition(elementFactory->getCraftingMaterials().size(), POS_CRAFTING_ITEMS, position, CRAFT_SIZE);
+	return getElementIndexPosition(elementFactory->listCraftItems().size(), POS_CRAFTING_ITEMS, position, CRAFT_SIZE);
 }
 
 int ElementManager::getEquipElement(glm::vec2 position)

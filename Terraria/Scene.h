@@ -54,7 +54,8 @@ private:
 	EnemyManager *enemyManager;
 	ElementManager *elementManager;
 
-	pair<glm::ivec2*, Element*> *pressed;
+	int delayPressed;
+	pair<glm::ivec2*, Element*> *elPressed;
 	glm::ivec2 screenSize;
 };
 

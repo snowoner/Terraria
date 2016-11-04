@@ -56,13 +56,17 @@ void Game::specialKeyReleased(int key)
 
 void Game::mouseMove(int x, int y)
 {
+	if (bMousePressed[0]) {
+		mousePos.x = x;
+		mousePos.y = y;
+	}
 }
 
 void Game::mousePress(int button, int x, int y)
 {
+	bMousePressed[button] = true;
 	mousePos.x = x;
 	mousePos.y = y;
-	bMousePressed[button] = true;
 }
 
 void Game::mouseRelease(int button)

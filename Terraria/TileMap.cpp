@@ -187,7 +187,7 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, bool init)
 void TileMap::buildElement(glm::ivec2 posElement, int type)
 {
 	// Do it to TileMap (getting material with player.removeElement()) and building it in tileMap
-	map[posElement.y*mapSize.x + posElement.x] = (type == 0) ? NULL : new Brick(type, (type-1)*tilesheetSize.x+5, tilesConf[(type + 1) / 2 - 1].hits, tilesConf[(type + 1) / 2 - 1].destroyable);
+	map[posElement.y*mapSize.x + posElement.x] = (type == 0) ? NULL : new Brick(type+1, (type)*tilesheetSize.x+6, tilesConf[(type + 1) / 2].hits, tilesConf[(type + 1) / 2].destroyable);
 	vertices.resize(vertices.size() + ((type == 0) ? -1 : 1) * 24);
 }
 
@@ -383,7 +383,7 @@ bool TileMap::playerCollisionBy(const glm::vec2 &pos1, const glm::vec2 &pos2)
 bool TileMap::insideDistance(const glm::vec2 &pos1, const glm::vec2 &pos2, float maxDistance) {
 	float x1 = (pos2.x > pos1.x) ? (pos1.x + 32 - 1) / tileSize : pos1.x / tileSize;
 	float x2 = pos2.x / tileSize;
-	float y1 = (pos2.y < pos1.y) ? (pos1.y + 32 - 1) / tileSize : pos1.y / tileSize;
+	float y1 = (pos2.y > pos1.y) ? (pos1.y + 32 - 1) / tileSize : pos1.y / tileSize;
 	float y2 = pos2.y / tileSize;
 
 	const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));

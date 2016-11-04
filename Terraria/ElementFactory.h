@@ -10,7 +10,7 @@
 #include "Material.h"
 #include "TileMap.h"
 
-#define MAX_ITEMS_SHOWN 5
+#define MAX_ITEMS_SHOWN 10
 #define CRAFT_MATERIALS 4
 
 class ElementFactory

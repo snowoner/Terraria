@@ -8,6 +8,8 @@
 #define INIT_PLAYER_X_TILES 4
 #define INIT_PLAYER_Y_TILES 11
 
+#define MOUSE_DELAY 6
+
 
 Scene::Scene()
 {
@@ -68,6 +70,7 @@ void Scene::update(int deltaTime)
 					playerManager->setItem(elementManager->getElementSelected());
 
 					firstTime = false;
+					delayPressed = 0;
 				}
 				state = ST_GAME;
 
@@ -243,58 +246,67 @@ void Scene::initShaders()
 
 void Scene::userActions(const glm::ivec2 &posPlayer, const glm::ivec2 &posCamera)
 {
-	if (pressed != NULL && playerManager->getState() >= PlayerAnims::HAND_RIGHT && playerManager->getState() < LASTANIM) {
+	if (elPressed != NULL && playerManager->getState() >= PlayerAnims::HAND_RIGHT && playerManager->getState() < LASTANIM) {
 		int delay = playerManager->getActualDelay();
-		if (delay == ACTION_DELAY && pressed != NULL){
-			if (dynamic_cast<Weapon*>(pressed->second) != 0) {
-				float damage = pressed->second->getDamage();
+		if (delay == ACTION_DELAY && elPressed != NULL){
+			if (dynamic_cast<Weapon*>(elPressed->second) != 0) {
+				float damage = elPressed->second->getDamage();
 				enemyManager->setDamage(posPlayer, damage, playerManager->getDirection());
 			}
 			else {
-				if (map->insideDistance(posPlayer, *pressed->first, MAXDISTANCE_BUILD)) {
-					glm::ivec2 posElement = *pressed->first / (glm::ivec2(map->getTileSize(), map->getTileSize()));
+				if (map->insideDistance(posPlayer, *elPressed->first, MAXDISTANCE_BUILD)) {
+					glm::ivec2 posElement = *elPressed->first / (glm::ivec2(map->getTileSize(), map->getTileSize()));
 
-					if (dynamic_cast<Pick*>(pressed->second) != 0 && map->getElementType(posElement) != NULL)
+					if (dynamic_cast<Pick*>(elPressed->second) != 0 && map->getElementType(posElement) != NULL)
 					{
 						int type = map->getElementType(posElement);
 						if (map->hitElement(posElement)){
 							if (map->getElementHitsLeft(posElement) == 0)
 							{
 								//map->buildElement(posElement, NULL);
-								elementManager->addElementMaterial(type, *pressed->first);
+								elementManager->addElementMaterial(type, *elPressed->first);
 							}
 							map->prepareArrays(SCREEN_VEC, false);
 						}
 					}
-					else if (dynamic_cast<Material*>(pressed->second) != 0) {
+					else if (dynamic_cast<Material*>(elPressed->second) != 0) {
 						if (map->getElementType(posElement) == NULL) {
-							map->buildElement(posElement, pressed->second->getType());
+							map->buildElement(posElement, elPressed->second->getTileIndex()-1);
 							map->prepareArrays(SCREEN_VEC, false);
 
-							elementManager->consumeElement(pressed->second, 1);
+							elementManager->consumeElement(elPressed->second, 1);
 
 							playerManager->setItem(elementManager->getElementSelected());
 						}
 					}
 				}
 			}
-			pressed = NULL;
+			elPressed = NULL;
 		}
 	}
 	else if (Game::instance().isMousePressed(0)) {
-		glm::ivec2 *pos = new glm::ivec2(Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
-		int elementSelected = elementManager->getCraftingElement(Game::instance().getMousePosition());
-		if (elementSelected != -1) elementManager->craftElement(elementSelected);
+		if (delayPressed != MOUSE_DELAY) delayPressed++;
 		else {
-			elementSelected = elementManager->getElement(Game::instance().getMousePosition());
-			if (elementSelected != -1) elementManager->equipElement(elementSelected);
+			delayPressed = 0;
+
+			glm::ivec2 *pos = new glm::ivec2(Game::instance().getMousePosition() + posCamera - SCREEN_VEC);
+			int elementSelected = elementManager->getCraftingElement(Game::instance().getMousePosition());
+			if (elementSelected != -1) 
+				elementManager->craftElement(elementSelected);
 			else {
-				elementSelected = elementManager->getEquipElement(Game::instance().getMousePosition());
-				if (elementSelected != -1) elementManager->unequipElement(elementSelected);
-				else pressed = new pair<glm::ivec2*, Element*>(pos, elementManager->getElementSelected());
+				elementSelected = elementManager->getElement(Game::instance().getMousePosition());
+				if (elementSelected != -1) elementManager->equipElement(elementSelected);
+				else {
+					elementSelected = elementManager->getEquipElement(Game::instance().getMousePosition());
+					if (elementSelected != -1) elementManager->unequipElement(elementSelected);
+					else if (elPressed == NULL)
+						elPressed = new pair<glm::ivec2*, Element*>(pos, elementManager->getElementSelected());
+
+				}
 			}
 		}
 	}
+	else delayPressed = 0;
 }
 
 void Scene::elementCollecion(const glm::ivec2 &posPlayer)

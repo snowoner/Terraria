@@ -2,6 +2,7 @@
 #include "Zombie.h"
 
 #define RESPAWN_TIME 10000
+#define MAX_ENEMIES 5
 
 EnemyManager::EnemyManager(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
@@ -28,9 +29,9 @@ void EnemyManager::setTileMap(TileMap *tileMap)
 void EnemyManager::update(int deltaTime, const glm::vec2 &posPlayer) 
 {
 	respawnTime += deltaTime;
-	if (respawnTime >= RESPAWN_TIME)
+	if (respawnTime >= RESPAWN_TIME && enemyFactory->size() < MAX_ENEMIES)
 	{
-		enemyFactory->createEnemy(0, *(enemySprites->at(0)->sprite->clone()));
+		addEnemy();
 		respawnTime -= RESPAWN_TIME;
 	}
 	enemyFactory->update(deltaTime, posPlayer);

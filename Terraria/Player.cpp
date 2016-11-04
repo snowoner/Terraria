@@ -54,9 +54,9 @@ void Player::update(int deltaTime, int delay)
 		}
 		else
 		{
-			if (Game::instance().isMousePressed(0)) {
-				Game::instance().mouseRelease(0);
+			if (Game::instance().isMousePressed(0) && state != HAND_RIGHT && state != HAND_LEFT){
 				if (item != NULL)
+					
 					state = (getDirection() == RIGHT) ? HAND_RIGHT : HAND_LEFT;
 			}
 			else {

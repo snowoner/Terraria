@@ -22,11 +22,12 @@ public:
 
 	void setDamage(const glm::vec2 posPlayer, float damage, int direction);
 	vector<float> getDamageEnemies();
+
+	int size() const { return enemies.size(); };
 private:
 	vector<Enemy*> enemies;
 	TileMap *map;
 	glm::vec2 tileMapDispl;
-	int size;
 
 	int updateTime;
 
